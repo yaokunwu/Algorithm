@@ -14,22 +14,25 @@
 ```Java
 public class TreeNode {
     int val;
-    TreeNode left;++
+    TreeNode left;
     TreeNode right;
     TreeNode(int val) {
       this.val = val;
     }
 } 
 ```
+* * *
+#### Sample code (example):  Adding values to a list from every single node in a tree
 **Pre-order Traversal** **- (Recursive)**
 ```Java
 public class PreOrderRecursive {
+    List<Integer> res = new ArrayList<>();
     public void preOrder(TreeNode root) {
         if (root == null) {
             return;
         }
         // 在递归之前写操作
-        System.out.println(root.val);
+        res.add(root.val);
         preOrder(root.left);
         preOrder(root.right);
     }
@@ -39,13 +42,14 @@ public class PreOrderRecursive {
 **In-order Traversal** **- (Recursive)**
 ```Java
 public class InOrderRecursive {
+    List<Integer> res = new ArrayList<>();
     public void inOrder(TreeNode root) {
         if (root == null) {
             return;
         }
         inOrder(root.left);
         // 在递归中间写操作
-        System.out.prinln(root.val);
+        res.add(root.val);
         inOrder(root.right);
     }
 }
@@ -54,6 +58,7 @@ public class InOrderRecursive {
 **Post-order Traversal** **- (Recursive)**
 ```
 public class PostOrderRecursive {
+    List<Integer> res = new ArrayList<>();
     public void postOrder(TreeNode root) {
         if (root == null) {
             return;
@@ -61,7 +66,7 @@ public class PostOrderRecursive {
         postOrder(root.left);
         postOrder(root.right);
         // 在递归之后写操作
-        System.out.println(root.val);
+        res.add(root.val);
     }
 }
 ```
@@ -121,12 +126,13 @@ public class PostOrderIterative {
         if (root == null) {
             return new ArrayList<>();
         }
-        List<Integer> res = new LinkedList<>();
+       // List<Integer> res = new LinkedList<>()；// List接口没有addFirst, LinkedList有
+        LinkedList<Integer> res = new LinkedList<>();
         Deque<TreeNode> stack = new LinkedList<>();
         stack.addFirst(root);
         while (!stack.isEmpty()) {
             TreeNode curr = stack.removeFirst();
-            res.addFirst(curr.val);
+            res.addFirst(curr.val);  // List接口没有addFirst, LinkedList有
             if (curr.left != null) {
                 stack.addFirst(curr.left);
             }
@@ -138,6 +144,7 @@ public class PostOrderIterative {
     }
 }
 ```
+* * *
           
 
 
