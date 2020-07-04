@@ -23,6 +23,7 @@ public class TreeNode {
 ```
 * * *
 #### Sample code (example):  Adding values to a list from every single node in a tree
+
 **Pre-order Traversal** **- (Recursive)**
 ```Java
 public class PreOrderRecursive {
@@ -95,6 +96,7 @@ public class PreOrderIterative {
     }
 }
 ```
+
 **In-order Traversal** **- (Iterative)**
 ```Java
 public class InOrderIterative {
@@ -144,8 +146,75 @@ public class PostOrderIterative {
     }
 }
 ```
-* * *
-          
+
+**Depth First Search**  **- (Top - down) Recursion part similar to pre-order traversal**
+```Java
+public class Solution {
+    private void dfs(TreeNode node, List<Integer> res) {
+        if (node == null) {
+            return;
+        }
+        res.add(node.val);
+        dfs(node.left, res);
+        dfs(node.right, res);
+    }
+    public List<Integer> dfsTopDown(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        dfs(root, res);
+        return res;
+    }
+}
+```
+
+**Depth First Search** **- (Bottom - up) Recursion part similar to post-order traversal (Divide and conquer)**
+```Java
+public class Solution {  
+    private List<Integer> divideAndConquer(TreeNode node) {
+        if (node == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> left = divideAndConquer(node.left);
+        List<Integer> right = divideAndConquer(node.right);
+        List<Integer> curr = new ArrayList<>();
+        //curr.add(node.val); /*是post order traversal 但是返回的结果与pre-order traversal相同*/
+        curr.addAll(left);
+        curr.addAll(right);
+        curr.add(node.val); /*是post order traversal 返回的结果与post-order traversal相同*/
+        return curr;
+    }
+    public List<Integer> dfsBottomUp(TreeNode root) {
+            return divideAndConquer(root);
+    }
+}
+```
+
+**Breadth First search** **- (Level order traversal)**
+```Java
+public class Solution {  
+    public List<Integer> bfs(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode curr = queue.poll();
+                res.add(curr.val);
+                if (curr.left != null) {
+                    queue.add(curr.left);
+                }
+                if (curr.right != null) {
+                    queue.add(curr.right);
+                }
+            }
+        }
+        return res;
+    }
+}
+```
+    
+
+
 
 
 
