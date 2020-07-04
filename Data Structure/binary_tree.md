@@ -149,7 +149,7 @@ public class PostOrderIterative {
 
 **Depth First Search**  **- (Top - down) Recursion part similar to pre-order traversal**
 ```Java
-public class Solution {
+class Solution {
     private void dfs(TreeNode node, List<Integer> res) {
         if (node == null) {
             return;
@@ -168,7 +168,7 @@ public class Solution {
 
 **Depth First Search** **- (Bottom - up) Recursion part similar to post-order traversal (Divide and conquer)**
 ```Java
-public class Solution {  
+class Solution {  
     private List<Integer> divideAndConquer(TreeNode node) {
         if (node == null) {
             return new ArrayList<>();
@@ -190,7 +190,7 @@ public class Solution {
 
 **Breadth First search** **- (Level order traversal)**
 ```Java
-public class Solution {  
+class Solution {  
     public List<Integer> bfs(TreeNode root) {
         List<Integer> res = new ArrayList<>();
         Queue<TreeNode> queue = new LinkedList<>();
@@ -212,10 +212,105 @@ public class Solution {
     }
 }
 ```
+* * *
+#### **习题及答案
+
+[Maximum Depth of Binary Tree](https://leetcode.com/problems/maximum-depth-of-binary-tree) <br>
+思路1：bottom up (Post order, Divide and Conquer)
+
+```Java
+class Solution {
+    private int maxDepthBottomUp(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftDepth = maxDepthBottomUp(root.left);
+        int rightDepth = maxDepthBottomUp(root.right);
+        int currDepth = Math.max(leftDepth, rightDepth) + 1;
+        return currDepth;
+    }
     
+    public int maxDepth(TreeNode root) {
+        return maxDepthBottomUp(root);
+    }
+}
+```
 
+思路2：Top Down (Pre order + backtracking)
 
+```Java
+class Solution {
+    int maxDepth = 0;
+    private void maxDepthTopDown(TreeNode root, int currDepth) {
+        if (root == null) {
+            return;
+        }
+        currDepth = currDepth + 1;
+        if (root.left == null && root.right == null && currDepth > maxDepth) {
+                maxDepth = currDepth;
+        }
+        maxDepthTopDown(root.left, currDepth);
+        maxDepthTopDown(root.right, currDepth);
+        currDepth -= 1;
+    }
+    
+    public int maxDepth(TreeNode root) {
+        maxDepthTopDown(root, 0);
+        return maxDepth;
+    }
+}
+```
 
+[Balanced Binary Tree](https://leetcode.com/problems/balanced-binary-tree) <br>
+思路：bottom up (Post order, Divide and Conquer) //自己的思路
+
+```Java
+class Solution {
+    private int getHeight(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        int left = getHeight(node.left);
+        int right = getHeight(node.right);
+        return Math.max(left, right) + 1;
+    }
+
+    public boolean isBalanced(TreeNode root) {
+        if(root == null) {
+            return true;
+        }
+        boolean left = isBalanced(root.left);
+        boolean right = isBalanced(root.right);
+        
+        if (left && right && Math.abs(getHeight(root.left) - getHeight(root.right)) <= 1) {
+            return true;
+        }
+        return false;
+    }
+}
+```
+优化后(本来是否balance就可以自下而上求depth的过程中得知)
+```Java
+class Solution {
+    private boolean balanced = true;
+    private int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftDepth = maxDepth(root.left);
+        int rightDepth = maxDepth(root.right);
+        if (Math.abs(rightDepth - leftDepth) > 1) {
+            balanced = false;
+        }
+        return Math.max(leftDepth, rightDepth) + 1;
+    }
+    
+    public boolean isBalanced(TreeNode root) {
+        maxDepth(root);
+        return balanced;
+    }
+}
+```
 
 
 
