@@ -289,7 +289,9 @@ class Solution {
     }
 }
 ```
+
 优化后(本来是否balance就可以自下而上求depth的过程中得知)
+
 ```Java
 class Solution {
     private boolean balanced = true;
@@ -312,7 +314,7 @@ class Solution {
 }
 ```
 
-[binary-tree-maximum-path-sum](https://leetcode.com/problems/binary-tree-maximum-path-sum)
+[Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum)<br>
 思路： bottom up (Post order, Divide and Conquer) 路径和等于当前节点的值与正数子节点的最大贡献值之和。 当前节点最大贡献值等于当前节点值+子节点最大贡献值。 思考的时候只按照某一节点开始思考。
 ```Java
 class Solution {
@@ -343,7 +345,7 @@ class Solution {
     }
 }
 ```
-优化后(基本一致，别人代码更简洁,我的代码更好理解)
+优化后(基本一致，别人代码更简洁,我的代码更好理解) <br>
 ```Java
 class Solution {
     private int maxSum = Integer.MIN_VALUE;
@@ -371,8 +373,9 @@ class Solution {
 }
 ```
 
-[Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree)
+[Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree) <br>
 思路: bottom up (Post order, Divide and Conquer) 返回不为null的treenode。 判断当前节点是否等于要找节点，如果是，返回当前节点，不是，返回null或者以前找到的节点。 若左右同时不会null， 返回当前节点。
+
 ```Java
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
@@ -392,8 +395,9 @@ class Solution {
 }
 ```
 
-[Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal)
+[Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal) <br>
 思路：模板level order traversal， 每个level新建一个list保存当前level的结果
+
 ```Java
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
@@ -423,8 +427,9 @@ class Solution {
     }
 }
 ```
-[Binary Tree Level Order Traversal II](https://leetcode.com/problems/binary-tree-level-order-traversal-ii)
+[Binary Tree Level Order Traversal II](https://leetcode.com/problems/binary-tree-level-order-traversal-ii) <br>
 思路： 把结果翻过来加就行了
+
 ```Java
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
@@ -455,7 +460,7 @@ class Solution {
 }
 ```
 
-[Binary Tree Zigzag Level Order Traversal](https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal)
+[Binary Tree Zigzag Level Order Traversal](https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal) <br>
 思路： 定义一个boolean变量来控制左右。
 ```Java
 class Solution {
@@ -493,7 +498,7 @@ class Solution {
 ```
 
 #### Application for Binary Search Tree <br>
-[Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree)
+[Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree) <br>
 思路： bottom up (Post order, Divide and Conquer) 
 ```Java
 ///一个有问题的解 ： 必须满足左边所有值小于当前node， 右边所有值大于当前node
@@ -513,7 +518,9 @@ class Solution {
     }
 }
 ```
+
 思路： 当前node大于左子树的最大值， 小于右子树的最小值 (自己想的，写法很难受)。 思路有问题， 因为这是BST，不需要用从底向上postorder traversal
+
 ```Java
 ///修改后
 class Solution {
@@ -550,7 +557,9 @@ class Solution {
     }
 }
 ```
+
 思路2：中序遍历，如果中序遍历得到的节点的值小于等于前一个 preVal，说明不是二叉搜索树 (课改写为中序非递归)
+
 ```Java
 class Solution {
     boolean isValid = true;
@@ -574,8 +583,10 @@ class Solution {
 }
 ```
 
-[Insert into a Binary Search Tree](https://leetcode.com/problems/insert-into-a-binary-search-tree)
+[Insert into a Binary Search Tree](https://leetcode.com/problems/insert-into-a-binary-search-tree) <br>
+
 思路1： 找到最后一个叶子节点满足插入条件即可  Recursion (BST不需要遍历，所以跟前面那些traversal没有关系，遍历是所有元素过一遍)
+
 ```
 class Solution {
     public TreeNode insertIntoBST(TreeNode root, int val) {
@@ -592,7 +603,9 @@ class Solution {
     }
 }
 ```
-思路2：改写为iterative方法
+
+思路2：改写为iterative方法 <br>
+
 ```Java
 class Solution {
     public TreeNode insertIntoBST(TreeNode root, int val) {
