@@ -157,6 +157,146 @@ class Solution {
 }
 ```
 
+[Clone Graph](https://leetcode.com/problems/clone-graph) <br>
+思路：**bfs**非递归
+```Java
+class Solution {
+    public Node cloneGraph(Node node) {
+        if (node == null) {
+            return node;
+        }
+        Map<Node, Node> checkMap = new HashMap<>();
+        Deque<Node> stack = new LinkedList<>();
+        stack.push(node);
+        checkMap.put(node, new Node(node.val));
+        while (!stack.isEmpty()) {
+            Node currNode = stack.pop();
+            for (Node neighbor : currNode.neighbors) {
+                if (!checkMap.containsKey(neighbor)) {
+                    checkMap.put(neighbor, new Node(neighbor.val));
+                    stack.push(neighbor);
+                }
+            }
+            Node currCopy = checkMap.get(currNode);
+            for (Node neighbor : currNode.neighbors) {
+                currCopy.neighbors.add(checkMap.get(neighbor));
+            }
+        }
+        return checkMap.get(node);
+    }
+}
+```
+dfs递归解 <br>
+```
+Java
+class Solution {
+    Map<Node, Node> checkMap = new HashMap<>();
+    public Node cloneGraph(Node node) {
+        //preorder
+        if (node == null) {
+            return null;
+        }
+        if (checkMap.containsKey(node)) {
+            return checkMap.get(node);
+        }
+        checkMap.put(node, new Node(node.val));
+        
+        Node currCopy = checkMap.get(node);
+        for (Node neighbor : node.neighbors) {
+            currCopy.neighbors.add(cloneGraph(neighbor));
+        }
+        return checkMap.get(node);
+    }
+}
+```
+**暂时没想到如何用stack来转换为dfs非递归解**
+
+[Number of Islands](https://leetcode.com/problems/number-of-island) <br>
+思路： 深度优先遍历， 遇到1的使它变为0, 计算搜索次数， 就是岛屿数量
+```Java
+class Solution {
+    private void dfs(char[][] grid, int row, int col) {
+        int nRows = grid.length;
+        int nCols = grid[0].length;
+        if (row < 0 || col < 0 || row >= nRows || col >= nCols || grid[row][col] == '0') {
+            return;
+        }
+        grid[row][col] = '0';
+        dfs(grid, row - 1, col);
+        dfs(grid, row + 1, col);
+        dfs(grid, row, col + 1);
+        dfs(grid, row, col - 1);
+    }
+    
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int nRows = grid.length;
+        int nCols = grid[0].length;
+        int nIsland = 0;
+        for (int i = 0; i < nRows; i++) {
+            for (int j = 0; j < nCols; j++) {
+                if (grid[i][j] == '1') {
+                    nIsland += 1;
+                    dfs(grid, i, j);
+                }
+            }
+        }
+        return nIsland;
+    }
+}
+```
+BFS解，每扫描一个陆地node，先判断其上下左右的node, 所以是BFS <br>
+```Java
+class Solution {  
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int nRows = grid.length;
+        int nCols = grid[0].length;
+        int nIsland = 0;
+
+        for (int i = 0; i < nRows; i++) {
+            for (int j = 0; j < nCols; j++) {
+                
+                if (grid[i][j] == '1') {
+                    grid[i][j] = '0';
+                    nIsland += 1;
+                    Queue<Integer> queue = new LinkedList<>();
+                    int id = i * nCols + j;
+                    queue.offer(id);
+                    while (!queue.isEmpty()) {
+                        int id = queue.poll();
+                        int c = id % nCols;
+                        int r = id / nCols;
+                        if (r - 1 >= 0 && grid[r - 1][c] == '1') {
+                            grid[r - 1][c] = '0';
+                            queue.offer((r - 1) * nCols + c);
+                        }
+                        if (r + 1 < nRows && grid[r + 1][c] == '1') {
+                            grid[r + 1][c] = '0';
+                            queue.offer((r + 1) * nCols + c);
+                        }
+                        if (c - 1 >= 0 && grid[r][c - 1] == '1') {
+                            grid[r][c - 1] = '0';
+                            queue.offer(r * nCols + c - 1);
+                        }
+                        if (c + 1 < nCols && grid[r][c + 1] == '1') {
+                            grid[r][c + 1] = '0';
+                            queue.offer(r * nCols + c + 1);
+                        }
+                    }
+                }
+            }
+        }
+        return nIsland;
+    }
+}
+```
+**注意网格DFS与二叉树DFS的区别， 二叉树只需要node作为起始点， 而网格需要grid和当前row， col， 三个变量作为起始点**
+[网格DFS模型详解](https://leetcode-cn.com/problems/number-of-islands/solution/dao-yu-lei-wen-ti-de-tong-yong-jie-fa-dfs-bian-li-) <br>
 
 
 
