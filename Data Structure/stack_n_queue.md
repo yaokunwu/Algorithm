@@ -93,8 +93,44 @@ class Solution {
 * Integer.parseInt()里面是string 不能是character
 * array 的excption条件有 1. null 2. array.length == 0 这两个条件要同时判断
 
-
-
+[Decode String](https://leetcode.com/problems/decode-string) <br>
+思路: 两个栈， 一个存数字，一个存字符串，栈用来保存当前结果
+```Java
+class Solution {
+    public String decodeString(String s) {
+        if (s == null || s.length() <= 1) {
+            return s;
+        }
+        Deque<Integer> stackMulti = new LinkedList<>();
+        Deque<StringBuilder> stackStr = new LinkedList<>();
+        int multi = 0;
+        StringBuilder res = new StringBuilder();
+        for (char chr : s.toCharArray()) {
+            if (chr >= '0' && chr <= '9') {
+                multi = multi * 10 + Integer.parseInt(String.valueOf(chr));
+            } else if (chr == '[') {
+                stackMulti.addFirst(multi);
+                stackStr.addFirst(res);
+                res = new StringBuilder();
+                multi = 0;
+            } else if (chr == ']') {
+                int currMulti = stackMulti.removeFirst();
+                StringBuilder currBuilder = stackStr.removeFirst();
+                for (int i = 0; i < currMulti; i++) {
+                    currBuilder.append(res);
+                }
+                res = currBuilder;
+            } else {
+                res.append(chr);
+            }
+        }
+        return res.toString();
+    }
+}
+```
+**注意事项** <br>
+* 在计算倍数时不要忘了之前的倍数位数
+* 把char转化为string用string.valueOf()比较好
 
 
 
