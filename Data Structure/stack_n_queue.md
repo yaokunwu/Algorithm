@@ -297,12 +297,155 @@ class Solution {
 ```
 **注意网格DFS与二叉树DFS的区别， 二叉树只需要node作为起始点， 而网格需要grid和当前row， col， 三个变量作为起始点**
 [网格DFS模型详解](https://leetcode-cn.com/problems/number-of-islands/solution/dao-yu-lei-wen-ti-de-tong-yong-jie-fa-dfs-bian-li-) <br>
+**后面再看看dfs， bfs**
 
+[Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram) <br>
+思路: 从暴力解法到运用单调栈 (和哨兵节点)。 单调栈为后继元素单调递增或递减。
+```Java
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        
+        int maxArea = 0;
+        
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(0);
+        for (int i = 1; i < heights.length; i++) {
+            while (!stack.isEmpty() && heights[i] < heights[stack.peek()]) {
+                int currHeight = heights[stack.pop()];
+                int currWidth = stack.isEmpty()? i : i - stack.peek() - 1;
+                maxArea = Math.max(maxArea, currWidth * currHeight);
+            }
+            stack.push(i);
+        }
+        while (!stack.isEmpty()) {
+            int currHeight = heights[stack.pop()];
+            int currWidth = stack.isEmpty()? heights.length : heights.length - stack.peek() - 1;
+            maxArea = Math.max(maxArea, currWidth * currHeight);
+        }
+        return maxArea;
+    }
+}
+```
+**注意**
+* System.arraycopy(sourceArray, sourceStart, targetArray, targetStart, copyLength);
 
+## Queue
+常用于BFS宽度优先搜索<br>
 
+[Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks) <br>
+思路1：要两个栈，其中一个用来反转顺序
+```Java
+class MyQueue {
+    private Deque<Integer> in;
+    private Deque<Integer> revert;
+    /** Initialize your data structure here. */
+    public MyQueue() {
+        in = new LinkedList<>();
+        revert = new LinkedList<>();
+    }
+    
+    /** Push element x to the back of queue. */
+    public void push(int x) {
+        while (!in.isEmpty()) {
+            revert.push(in.pop());
+        }
+        in.push(x);
+        while (!revert.isEmpty()) {
+            in.push(revert.pop());
+        }
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    public int pop() {
+        return in.pop();
+    }
+    
+    /** Get the front element. */
+    public int peek() {
+        return in.peek();
+    }
+    
+    /** Returns whether the queue is empty. */
+    public boolean empty() {
+        return in.isEmpty();
+    }
+}
+```
+思路2： 两个栈，一个负责输入， 一个负责输出
+```Java
+class MyQueue {
+    private int front; // peek时不需要执行倒转stack的操作；
+    // 一栈进，一栈出
+    private Deque<Integer> in;
+    private Deque<Integer> out;
+    /** Initialize your data structure here. */
+    public MyQueue() {
+        in = new LinkedList<>();
+        out = new LinkedList<>();
+    }
+    
+    /** Push element x to the back of queue. */
+    public void push(int x) {
+        if (in.isEmpty()) {
+            front = x;
+        }
+        in.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    public int pop() {
+        if (out.isEmpty()) {
+            while (!in.isEmpty()) {
+                out.push(in.pop());
+            }
+        }
+        return out.pop();
+    }
+    
+    /** Get the front element. */
+    public int peek() {
+        if (out.isEmpty()) {
+            return front;
+        }
+        return out.peek();
+    }
+    
+    /** Returns whether the queue is empty. */
+    public boolean empty() {
+        return out.isEmpty() && in.isEmpty();
+    }
+}
+```
 
-
-
-
-
-
+[Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal) <br>
+思路： 常规BFS解法，用queue实现
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<Integer> currLevel = new ArrayList<>();
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode currNode = queue.poll();
+                currLevel.add(currNode.val);
+                if (currNode.left != null) {
+                    queue.offer(currNode.left);
+                }
+                if (currNode.right != null) {
+                    queue.offer(currNode.right);
+                }
+            }
+            res.add(currLevel);
+        }
+        return res;
+    }
+}
+```
