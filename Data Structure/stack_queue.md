@@ -449,3 +449,71 @@ class Solution {
     }
 }
 ```
+
+[01 Matrix](https://leetcode.com/problems/01-matrix) <br>
+思路：用BFS做，每次判断当前node是否是0，然后进入bfs，求解最短距离 <br>
+自己的解： 不是很优雅。。 但是是自己想的，用queue进行BFS， 注意 row = id / nCols; col = id % nCols 这种与网格相关的技巧。
+```Java
+class Solution {
+    public int[][] updateMatrix(int[][] matrix) {
+        int nRows = matrix.length;
+        int nCols = matrix[0].length;
+        int[][] distance = new int[nRows][nCols];
+        
+        for (int i = 0; i < nRows; i++) {
+            for (int j = 0; j < nCols; j++) {
+                int dist = 0;
+                if (matrix[i][j] != 0) {
+                    Queue<Integer> queue = new LinkedList<>();
+                    int id = i * nCols + j;
+                    queue.add(id);
+                    while (!queue.isEmpty()) {
+                        int levelSize = queue.size();
+                        
+                        for (int k = 0; k < levelSize; k++) {
+                            id = queue.poll();
+                            int r = id / nCols;
+                            int c = id % nCols;
+                            if (matrix[r][c] == 0) {
+                                queue.clear();
+                                // dist -= 1;
+                                break;
+                            }
+                            if (r - 1 >= 0) {
+                                queue.add((r - 1) * nCols + c);
+                            }
+                            if (r + 1 < nRows) {
+                                queue.add((r + 1) * nCols + c);
+                            }
+                            if (c - 1 >= 0) {
+                                queue.add(r * nCols + c - 1);
+                            }
+                            if (c + 1 < nCols) {
+                                queue.add(r * nCols + c + 1);
+                            }
+                        }
+                        if (!queue.isEmpty()) {
+                            dist += 1;
+                        }
+                    }
+                }
+            distance[i][j] = dist;
+            }
+        }
+        return distance;
+    }
+}
+```
+思路2： 优化后的BFS， 别人的code <br>
+思路3： 动态规划 <br>
+
+## Summary
+* 熟悉栈的使用场景
+    * 后进先出，保存临时值
+    * 利用栈进行DFS深度搜索
+* 熟悉队列的使用场景
+    * 利用队列BFS广度搜索
+    
+## TO-DO
+[Number of Islands](https://leetcode.com/problems/number-of-island) <br> 类似题型练习，掌握网格基本处理方法
+[01 Matrix](https://leetcode.com/problems/01-matrix) <br> 查看BFS优化解以及动态规划解
