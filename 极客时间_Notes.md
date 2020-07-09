@@ -1,5 +1,5 @@
 # 笔记
-* 递归的时间复杂度计算 ：  带入例子 + 画递归树，state space tree。**  
+* 递归的时间复杂度计算 ：  带入例子 + 画递归树，state space tree。**   //只是在分析复杂度的时候需要，在写递归代码的时候尽量不去想。
 * 递归的空间复杂度计算 ：  等于递归的深度
 * IntelliJ 里面有个leetcode Plugin // TODO ： 加入这个plugin
 * Home End 键， ctrl+左右，选单词，选整行 <br>
@@ -67,7 +67,7 @@ class Solution {
 * Test cases <br>
 
 刷题第一遍：<br>
-* 5分钟: 读题+思考 <br>
+* 5 - 10分钟: 读题+思考 <br>
 * （如果不会）直接看解法： 注意！ 多解法，比较解法优劣<br>
 * 背诵，默写 好的解法<br>
 
@@ -95,3 +95,32 @@ class Solution {
 * * *
 - - -
 
+##第03课丨01数组、链表、跳表的基本实现和特性<br>
+**懵逼的时候怎么办？**
+能不能暴力解？<br>
+最简单的情况是什么？<br>
+泛化，找重复子问题，重复性<br>
+
+
+##第07课丨resursion<br>
+```Java
+public void recur(int level, int param) {
+    //base case
+    if (level > MAX_LEVEL) {
+        return;
+    }
+    // 处理当前层
+    process(level, param);
+    
+    //进入下一层
+    recur(level + 1, new Param);
+    
+    //清扫当前层 （回溯的话)
+}
+```
+**注意事项**
+* 不要人肉进行递归<br>
+* 找最近重复子问题<br>
+* 数学归纳法思维 （最简条件 + 泛化）<br>
+[典型递归详解，讲的挺好](https://pan.baidu.com/s/1eyFdfGIV5dyBWAmagbHUmw) <br>
+#问自己：我怎么能到达当前的状态？ <br>
