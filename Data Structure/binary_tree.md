@@ -100,21 +100,22 @@ public class PreOrderIterative {
 **In-order Traversal** **- (Iterative)**
 ```Java
 public class InOrderIterative {
-     public List<Integer> inOrder(TreeNode root) {
-        if (root == null) {
-            return new ArrayList<>();
-        }
+    public List<Integer> inOrder(TreeNode root) {
         List<Integer> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
         Deque<TreeNode> stack = new LinkedList<>();
         TreeNode curr = root;
         while (!stack.isEmpty() || curr != null) {
-            while (curr != null) {
-                stack.addFirst(curr);
+            if (curr != null) {
+                stack.push(curr);
                 curr = curr.left;
+            } else {
+                curr = stack.pop();
+                res.add(curr.val);
+                curr = curr.right;
             }
-            curr = stack.removeFirst();
-            res.add(curr.val);
-            curr = curr.right;
         }
         return res;
     }
@@ -124,22 +125,27 @@ public class InOrderIterative {
 **Post-order Traversal** **- (Iterative)**
 ```Java
 public class PostOrderIterative {
-     public List<Integer> postOrder(TreeNode root) {
+    public List<Integer> postorder(TreeNode root) {
+        List<Integer>  res = new ArrayList<>();
         if (root == null) {
-            return new ArrayList<>();
+            return res;
         }
-       // List<Integer> res = new LinkedList<>()；// List接口没有addFirst, LinkedList有
-        LinkedList<Integer> res = new LinkedList<>();
         Deque<TreeNode> stack = new LinkedList<>();
-        stack.addFirst(root);
-        while (!stack.isEmpty()) {
-            TreeNode curr = stack.removeFirst();
-            res.addFirst(curr.val);  // List接口没有addFirst, LinkedList有
-            if (curr.left != null) {
-                stack.addFirst(curr.left);
-            }
-            if (curr.right != null) {
-                stack.addFirst(curr.right);
+        TreeNode curr = root;
+        TreeNode last = null;
+        while (!stack.isEmpty() || curr != null) {
+            if (curr != null) {
+                stack.push(curr);
+                curr = curr.left;
+            } else {
+                TreeNode temp = stack.peek();
+                if (temp.right == null || temp.right == last) {
+                    res.add(temp.val);
+                    last = temp;
+                    stack.pop();
+                } else {
+                    curr = temp.right;
+                }
             }
         }
         return res;
