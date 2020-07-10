@@ -243,7 +243,51 @@ class Solution {
 **注意**
 在判断是左边还是右边递增的时候，取等号问题，因为middle可以和start相等，所以必须在middle大于等于start时才能保证左边是递增的。例子 [3, 1] <br>
 
+[Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii/) <br>
+思路: 同上
+class Solution {
+    public boolean search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        
+        int start = 0, end = nums.length - 1;
+        while (start <= end) {
+            int middle = start + (end - start) / 2;
+            if (nums[middle] == target) {
+                return true;
+            }
+            if (nums[start] == nums[middle] && nums[middle] == nums[end]) {
+                start++;
+                end--;
+            } else {
+                if (nums[start] <= nums[middle]) {  // left size is increasing
+                    if (nums[start] <= target && nums[middle] > target) {
+                        end = middle - 1;
+                    } else {
+                        start = middle + 1;
+                    }
+                } else {
+                    if (nums[middle] < target && nums[end] >= target) {
+                        start = middle + 1;
+                    } else {
+                        end = middle - 1;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+}
+```
 
+# 总结
+二分搜索核心四点要素（必背 && 理解）<br>  
+模板3：<br>
+* 1. 初始化： start = 0， end = len - 1;
+* 2. 循环退出条件： start <= end;
+* 3. 比较中点和目标值: A[mid] ==, < ,> target
+* 4. 判断最后两个元素是否符合 A[start], A[end]? target
 
 
 
