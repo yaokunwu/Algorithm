@@ -164,7 +164,7 @@ class Solution {
         while (start <= end) {
             int middle = start + (end - start) / 2;
             // right side is increasing
-            if (nums[start] > nums[middle]) {
+            if (nums[start] > nums[middle]) { // 保证了右边（middle及其右边）为递增
                 res = Math.min(nums[middle], res);
                 end = middle - 1;
             } else {
@@ -176,6 +176,8 @@ class Solution {
     }
 }
 ```
+**注意**
+这里的判断左右递增的条件就是对的。
 
 [Find Minimum in Rotated Sorted Array II](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/) <br>
 思路： 当左中右三个点同时相等时，需要左++ 右--
@@ -203,6 +205,43 @@ class Solution {
     }
 }
 ```
+
+[Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array) <br>
+思路： 同上
+```Java
+class Solution {
+    public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        
+        int start = 0, end = nums.length - 1;
+        while (start <= end) {
+            int middle = start + (end - start) / 2;
+            if (nums[middle] == target) {
+                return middle;
+            }
+            if (nums[middle] >= nums[start]) {  //left is sorted
+                if (nums[start] <= target && nums[middle] > target) {
+                    end = middle - 1;
+                } else {
+                    start = middle + 1;
+                }
+            } else {
+                if (nums[middle] < target && nums[end] >= target) {
+                    start = middle + 1;
+                } else {
+                    end = middle - 1;
+                }
+            }
+        }
+        // return nums[start] == target ? start : -1;
+        return - 1;
+    }
+}
+```
+**注意**
+在判断是左边还是右边递增的时候，取等号问题，因为middle可以和start相等，所以必须在middle大于等于start时才能保证左边是递增的。例子 [3, 1] <br>
 
 
 
