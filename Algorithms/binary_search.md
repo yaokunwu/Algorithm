@@ -279,9 +279,7 @@ class Solution {
         return false;
     }
 }
-
 ```
-
 # 总结
 二分搜索核心四点要素（必背 && 理解）<br>  
 模板3：<br>
