@@ -245,6 +245,7 @@ class Solution {
 
 [Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii/) <br>
 思路: 同上
+```
 class Solution {
     public boolean search(int[] nums, int target) {
         if (nums == null || nums.length == 0) {
