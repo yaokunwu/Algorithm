@@ -179,19 +179,20 @@ class Solution {
         }
     }
     
-    //其实就是写个sink代码。。。 求一个儿子就行
+    //其实就是写个sink代码, 这个比较好记，因为把比较顺序换了
     private void sink(int[] nums, int i, int upperBound) {
-        if (i >= upperBound / 2) {
-            return;
+        int largest = i;
+        int leftChild = i * 2 + 1;
+        int rightChild = leftChild + 1;
+        if (leftChild < upperBound && nums[leftChild] > nums[largest]) {
+            largest = leftChild;
         }
-        int maxChild = i * 2 + 1;
-        
-        if (maxChild < upperBound - 1 && nums[maxChild] < nums[maxChild + 1]) {
-            maxChild = maxChild + 1;
+        if (rightChild < upperBound && nums[rightChild] > nums[largest]) {
+            largest = rightChild;
         }
-        if (maxChild < upperBound && nums[i] < nums[maxChild]) {
-            swap(nums, i, maxChild);
-            sink(nums, maxChild, upperBound);
+        if (largest != i) {
+            swap(nums, i, largest);
+            sink(nums, largest, upperBound);
         }
     }
     
