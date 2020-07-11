@@ -287,12 +287,4 @@ class Solution {
 * 1. 初始化： start = 0， end = len - 1;
 * 2. 循环退出条件： start <= end;
 * 3. 比较中点和目标值: A[mid] ==, < ,> target
-* 4. 判断最后两个元素是否符合 A[start], A[end]? target
-
-
-
-
-
-
-
-
+* 4. 判断最后两个元素是否符合 A[start], A[end]? target <br>
