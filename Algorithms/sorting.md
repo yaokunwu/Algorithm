@@ -145,6 +145,63 @@ class Solution {
 ![image](https://camo.githubusercontent.com/48c8803d6989e367fe9188215392243d5049e35f/687474703a2f2f7761726473657074656d6265722e636c75622f466c6b444b66646c46686b74432d41756d394432546357572d557864)
 [动画展示](https://github.com/wardseptember/notes/blob/master/docs/LeetCode/basic_algorithm/sort.md) <br>
 **注意**：(可以新建一个maxHeap然后sort， 也可以heapification inplace，然后再sort)
-详情参考[cs61B Basic sorts](https://www.youtube.com/watch?v=AEAmgbls8TM&feature=youtu.be) <br>
-* 一个 数组给定后，相当于给了一个complete binary tree 这样相当于heap就已建立好，需要做的就是遍历并sink每个元素直到maxHeap建立完成 （**Import!!!**: 建立maxHeap时需要（bottom up level order traversal），也就是从array的最后开始sink down,这样才能保证遍历所有元素后我们建立了正确的maxheap）<br>
-* 
+详情参考[cs61B Basic sorts](https://www.youtube.com/watch?v=AEAmgbls8TM&feature=youtube) <br>
+* 一个 数组给定后，相当于给了一个complete binary tree 这样相当于heap就已建立好，需要做的就是遍历并sink每个元素直到maxHeap建立完成 （**Import!!!**: 建立maxHeap时需要（bottom up level order traversal），也就是从array的最后开始sink down,这样才能保证遍历所有元素后我们建立了正确的maxheap） <br>
+* 针对bottom up level order sinking, 可以直接添加条件从一半开始up, 因为后一半都是leaf,没有child，不需要sink。
+* maxHeap建立完成后就可以进行inplace sorting(常规heap remove 操作， 只不过把remove的值放在了array最后， 然后进行sink)。 <br>
+这个代码自己写的，(inplace heapSort)自顶向下<br>
+```Java
+class Solution {
+    //Heap sort
+    public int[] sortArray(int[] nums) {
+        if (nums.length <= 1) {
+            return nums;
+        }
+        // Heapification
+        heapification(nums);
+        // inplace sorting
+        sorting(nums);
+        return nums;
+    }
+    
+    //Heapification
+    private void heapification(int[] nums) {
+        for (int i = (nums.length - 1) / 2; i >= 0; i--) {
+            sink(nums, i, nums.length);
+        }
+    }
+    
+    //inplace sorting
+    private void sorting(int[] nums) {
+        for(int i = nums.length - 1; i > 0 ; i--) {
+            swap(nums, 0, i);
+            sink(nums, 0, i);
+        }
+    }
+    
+    //其实就是写个sink代码。。。 求一个儿子就行
+    private void sink(int[] nums, int i, int upperBound) {
+        if (i >= upperBound / 2) {
+            return;
+        }
+        int maxChild = i * 2 + 1;
+        
+        if (maxChild < upperBound - 1 && nums[maxChild] < nums[maxChild + 1]) {
+            maxChild = maxChild + 1;
+        }
+        if (maxChild < upperBound && nums[i] < nums[maxChild]) {
+            swap(nums, i, maxChild);
+            sink(nums, maxChild, upperBound);
+        }
+    }
+    
+    private void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+```
+## 参考
+[十大经典排序](https://www.cnblogs.com/onepixel/p/7674659.html) <br>
+[二叉堆](https://labuladong.gitbook.io/algo/shu-ju-jie-gou-xi-lie/er-cha-dui-xiang-jie-shi-xian-you-xian-ji-dui-lie)<br>
