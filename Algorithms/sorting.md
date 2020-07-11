@@ -138,3 +138,13 @@ class Solution {
     }
 }
 ```
+
+### Heap sort
+用数组表示的完美二叉树 complete binary tree <br>
+完美二叉树 vs 其他二叉树
+![image](https://camo.githubusercontent.com/48c8803d6989e367fe9188215392243d5049e35f/687474703a2f2f7761726473657074656d6265722e636c75622f466c6b444b66646c46686b74432d41756d394432546357572d557864)
+[动画展示](https://github.com/wardseptember/notes/blob/master/docs/LeetCode/basic_algorithm/sort.md) <br>
+**注意**：(可以新建一个maxHeap然后sort， 也可以heapification inplace，然后再sort)
+详情参考[cs61B Basic sorts](https://www.youtube.com/watch?v=AEAmgbls8TM&feature=youtu.be) <br>
+* 一个 数组给定后，相当于给了一个complete binary tree 这样相当于heap就已建立好，需要做的就是遍历并sink每个元素直到maxHeap建立完成 （**Import!!!**: 建立maxHeap时需要（bottom up level order traversal），也就是从array的最后开始sink down,这样才能保证遍历所有元素后我们建立了正确的maxheap）<br>
+* 
