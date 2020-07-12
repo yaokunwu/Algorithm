@@ -123,8 +123,7 @@ public class Solution {
 * 重复子问题
     如果用一句话概括一下， 那就是，不同的决策序列，到达某个相同阶段时，可能会产生重复的状态。所以才会用一个数组记录中间结果，避免重复计算。<br>
     
-动态规划，bottom up, 这里变成一维数组，因为层号实际上可以不用记录，每次记录上一层的值，到当前层就把以前的覆盖到，动态规划运用场景其中一条就是最优子结构，
-往下走不用回头一定是最优的。<br>
+动态规划，bottom up, 这里变成一维数组，因为层号实际上可以不用记录，每次记录上一层的值，到当前层就把以前的覆盖到，动态规划运用场景其中一条就是最优子结构, 往下走不用回头一定是最优的。<br>
 ```Java
 class Solution {
     public int minimumTotal(List<List<Integer>> triangle) {
@@ -147,3 +146,233 @@ class Solution {
     }
 }
 ```
+这里空间我就不优化了。
+
+## 递归和动态规划的关系 <br>
+递归是一种程序的实现方式，函数的自我调用。（注意recursion function的设计，需要的参数等等）<br>
+```Java
+public Type recursion(Type level, Type param1, Type param2) {
+    //达到最大梦境层数，do something退出
+    if (level >= maxLevel) {
+        return something;
+    }
+    //当前层需要干的事情
+    param1.doSomeThing();
+    
+    //进入下一层梦境
+    recursion(level + 1, param1, param2);
+    
+    //从下一层梦境回来时，do something。
+    清理当前层参数等
+}
+```
+动态规划，是一种解决问题的思想，大规模问题的结果，是由小规模问题的结果运算来的。 动态规划可用递归来实现（Memorization Search, Top-down)<br>
+## 使用场景<br>
+满足三个条件：最优子结构，无后效性， 重复子问题<br>
+简单来说就是：<br>
+* 满足以下条件之一
+    * 求最大/最小值 (Maximum/Minimum)
+    * 求是否可行(Yes/No)
+    * 求可行个数(Count(*))
+* 满足不能排序或者交换（Can not sort / swap)
+如题：[Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) 位置可以交换，所以不用动态规划<br>
+**TO-DO： 上述结论待理解**
+
+## 四点要素
+1. 状态 State
+    * 灵感，创造力，存储小规模问题的结果
+2. 方程 Function
+    * 状态之间的联系，怎么通过小的状态，来算大的状态
+3. 初始化 Initialization
+    * 最极限的小状态是什么，起点在哪
+4. 答案 Answer
+    * 最大的那个状态是什么，终点在哪
+## 常见四种类型
+1. Matrix DP (10%)
+2. Sequence (40%)
+3. Two Sequences DP (40%)
+4. Backpack (10%) <br>
+注意点
+    * 贪心算法大多数题目靠背答案，所以如果能用动态规划就尽量用动态规划，不用贪心算法 **待理解**<br>
+
+### 1. 矩阵类型 （10%）
+[Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/) <br>
+思路: 先递归 + memo 再到 bottom up
+自顶向下
+```Java
+class Solution {
+    private Integer[][] dp;
+    public int minPathSum(int[][] grid) {
+        // recursion, level
+        // base case: reach the last position
+        // param: row, col
+        // So: define a recursion helper method
+        dp = new Integer[grid.length][grid[0].length];
+        int res = recur(grid, grid.length - 1, grid[0].length - 1);
+        return res;
+    }
+    
+    private int recur(int[][] grid, int row, int col) {
+        //base case 2
+        if (row < 0 || col < 0) {
+            return Integer.MAX_VALUE;
+        }
+        if (dp[row][col] != null) {
+            return dp[row][col];
+        }
+        //base case 1
+        if (row == 0 && col == 0) {
+            return grid[0][0];
+        }
+        
+        int up = recur(grid, row - 1, col);
+        int left = recur(grid, row, col - 1);
+        dp[row][col] = Math.min(up, left) + grid[row][col];
+        return dp[row][col];
+    }
+}
+```
+Bottom up
+```Java
+class Solution {
+    public int minPathSum(int[][] grid) {
+    // 注意加quality checking
+        int nRows = grid.length;
+        int nCols = grid[0].length;
+        if (grid == null || nRows == 0 || nCols == 0) {
+            return 0;
+        }
+        // dp construction
+        int[][] dp = new  int[nRows][nCols];
+        
+        //Initilization
+        dp[0][0] = grid[0][0];
+        
+        int sum = grid[0][0];
+        for (int row = 1; row < nRows; row++) {
+            sum += grid[row][0];
+            dp[row][0] = sum;
+        }
+        
+        sum = grid[0][0];
+        for (int col = 1; col < nCols; col++) {
+            sum += grid[0][col];
+            dp[0][col] = sum;
+        }
+        
+        // Formulation
+        for (int row = 1; row < nRows; row++) {
+            for (int col = 1; col < nCols; col++) {
+                dp[row][col] = Math.min(dp[row][col - 1], dp[row - 1][col])
+                    + grid[row][col];
+            }
+        }
+        return dp[nRows - 1][nCols - 1];
+    }
+}
+```
+[Unique Paths](https://leetcode.com/problems/unique-paths/) <br>
+```Java
+class Solution {
+    int nRows, nCols;
+    Integer[][] dp;
+    public int uniquePaths(int m, int n) {
+        nRows = m;
+        nCols = n;
+        dp = new Integer[m][n];
+        int res = helper(m - 1, n - 1);
+        return res;
+    }
+    
+    private int helper(int row, int col) {
+        if (row == 0 || col == 0) {
+            return 1;
+        }
+        
+        if (dp[row][col] != null) {
+            return dp[row][col];
+        }
+        
+        int up = helper(row - 1, col);
+        int left = helper(row, col - 1);
+        dp[row][col] = up + left;
+        return dp[row][col];
+    }
+}
+```
+Bottom up
+```Java
+class Solution {
+    public int uniquePaths(int m, int n) {
+        // dp construction
+        int[][] dp = new int[m][n];
+        
+        //Initialization
+        for (int row = 0; row < m; row++) {
+            dp[row][0] = 1;
+        }
+        for (int col = 0; col < n; col++) {
+            dp[0][col] = 1;
+        }
+        
+        // formulation
+        for (int row = 1; row < m; row++) {
+            for (int col = 1; col < n; col++) {
+                dp[row][col] = dp[row - 1][col] + dp[row][col - 1];
+            }
+        }
+        
+        return dp[m - 1][n - 1];
+    }
+}
+```
+**TO-DO 回顾dp pattern里面是怎么讲解空间压缩的，有点忘了**
+
+[Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) <br>
+思路：除了初始化的时候不一样，其他地方差不多。
+```Java
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int nRows = obstacleGrid.length;
+        int nCols = obstacleGrid[0].length;
+        //dp construction
+        int[][] dp = new int[nRows][nCols];
+        
+        //initilization
+        boolean isob = false;
+        for (int row = 0; row < nRows; row++) {
+            if (obstacleGrid[row][0] == 1) {
+                isob = true;
+            }
+            dp[row][0] = isob? 0 : 1;
+        }
+        
+        isob = false;
+        for (int col = 0; col < nCols; col++) {
+            if (obstacleGrid[0][col] == 1) {
+                isob = true;
+            }
+            dp[0][col] = isob? 0 : 1;
+        }
+        // formulation
+        for (int row = 1; row < nRows; row++) {
+            for (int col = 1; col < nCols; col++) {
+                if (obstacleGrid[row][col] == 1) {
+                    dp[row][col] = 0;
+                } else {
+                    dp[row][col] = dp[row - 1][col] +dp[row][col - 1];
+                }
+            }
+        }
+        return dp[nRows - 1][nCols - 1];
+    }
+}
+```
+
+
+
+
+
+
+
+
