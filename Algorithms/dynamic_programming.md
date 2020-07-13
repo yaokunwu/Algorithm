@@ -719,4 +719,64 @@ class Solution {
 
 ### Two Sequences DP (40%)
 [Longest Common Subsequence]<https://leetcode.com/problems/longest-common-subsequence/> <br>
+思路：dp[i][j]表示 string1[0 : i] 和 string2[0: j] 的最大公共子序列长度。
+**注意： 考虑状态转移方程时，一定注意如何转移的正确性**, 比如当前dp[i][j]的值等于dp[i-1][j-1] + 1，必须能说得通make sense，而不是感觉一个数字可以得到另一个数字就建立方程。
+```Java
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        // construction
+        int[][] dp = new int[text1.length() + 1][text2.length() + 1];
+        
+        // init不需要, 因为数组中多加了一行一列的空字符串 相当于initialize 首行首列为0
+        
+        // formulation
+        for (int i = 1; i <= text1.length(); i++) {
+            for (int j = 1; j <= text2.length(); j++) {
+                if (text2.charAt(j - 1) == text1.charAt(i - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1]  + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+                }
+            }
+        }
+        return dp[text1.length()][text2.length()];
+    }
+}
+```
+**TO-DO**: 自顶向下的递归写法，参考[anwser](https://leetcode-cn.com/problems/longest-common-subsequence/solution/dong-tai-gui-hua-zhi-zui-chang-gong-gong-zi-xu-lie/) <br>
+
+[Edit Distance](https://leetcode.com/problems/edit-distance/) <br>
+思路：dp[i][j] 表示从str1[0 : i] 到str2[0 : j]需要的步数，所谓的编辑距离。 通过观察dp[i][j] 和与对应操作对应的dp[i][j - 1], dp[i - 1][j]和dp[i - 1][j - 1]的关系， 来确定值。。
+```Java
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int[][] dp = new int[word2.length() + 1][word1.length() + 1];
+        
+        for (int i = 0; i <= word1.length(); i++) {
+            dp[0][i] = i;
+        }
+        for (int i = 0; i <= word2.length(); i++) {
+            dp[i][0] = i;
+        }
+        
+        for (int i = 1; i <= word2.length(); i++) {
+            for (int j = 1; j <= word1.length(); j++) {
+                int op1 = dp[i - 1][j] + 1;
+                int op2 = dp[i][j - 1] + 1;
+                int op3 = dp[i - 1][j - 1];
+                if (word2.charAt(i - 1) != word1.charAt(j - 1)) {
+                   op3 += 1;
+                }
+                dp[i][j] = Math.min(Math.min(op1, op2), op3); 
+            }
+        }
+        return dp[word2.length()][word1.length()];
+    }
+}
+```
+
+### Coins and Backpacks
+[Coin Change](https://leetcode.com/problems/coin-change/) <br>
 思路：
+
+
