@@ -339,20 +339,18 @@ class Solution {
         int[][] dp = new int[nRows][nCols];
         
         //initilization
-        boolean isob = false;
         for (int row = 0; row < nRows; row++) {
             if (obstacleGrid[row][0] == 1) {
-                isob = true;
+                break;
             }
-            dp[row][0] = isob? 0 : 1;
+            dp[row][0] = 1;
         }
         
-        isob = false;
         for (int col = 0; col < nCols; col++) {
             if (obstacleGrid[0][col] == 1) {
-                isob = true;
+                break;
             }
-            dp[0][col] = isob? 0 : 1;
+            dp[0][col] = 1;
         }
         // formulation
         for (int row = 1; row < nRows; row++) {
@@ -368,11 +366,357 @@ class Solution {
     }
 }
 ```
+Recursion<br>
+循环终止条件比较难写（意味着不用memo的话我没找到base case怎么写）, 注意，base case 不好在recursion中找的话就可以直接提前写进memo。
+```Java
+class Solution {
+    Integer[][] dp;
+    int nRows, nCols;
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        nRows = obstacleGrid.length;
+        nCols = obstacleGrid[0].length;
+        dp = new Integer[nRows][nCols];
+        boolean isobs = false;
+        for (int row = 0; row < nRows; row++) {
+            if (obstacleGrid[row][0] == 1) {
+                isobs = true;
+            }
+            dp[row][0] = isobs? 0 : 1;
+        }
+        isobs = false;
+        for (int col = 0; col < nCols; col++) {
+            if (obstacleGrid[0][col] == 1) {
+                isobs = true;
+            }
+            dp[0][col] = isobs? 0 : 1;
+        }
+        
+        int res = dfs(obstacleGrid, nRows - 1, nCols - 1);
+        return res;
+    }
+    
+    private int dfs(int[][] obstacleGrid, int row, int col) {
+        if (dp[row][col] != null) {
+            return dp[row][col];
+        }
+        
+        int up = dfs(obstacleGrid, row - 1, col);
+        int left = dfs(obstacleGrid, row, col - 1);
+        dp[row][col] = obstacleGrid[row][col] == 1? 0 : (up + left);
+        
+        return dp[row][col];
+    }
+}
+```
+**TO-DO 一道题体会 动规，递归，分治，回溯** <br>
+
+### 2. 序列类型（40%）
+[Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) <br>
+思路: 要么从倒数第二节台阶上来要么从倒数第一阶上来
+```Java
+class Solution {
+    Integer[] dp;
+    public int climbStairs(int n) {
+        dp = new Integer[n + 1];
+        return climb(n);
+    }
+    
+    private int climb(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 2) {
+            return 2;
+        }
+        if (dp[n] != null) {
+            return dp[n];
+        }
+        int back1 = climb(n - 1);
+        int back2 = climb(n - 2);
+        dp[n] = back1 + back2;
+        return dp[n];
+    }
+}
+```
+Bottom up
+```Java
+class Solution {
+    public int climbStairs(int n) {
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
+    }
+}
+```
+
+[Jump Game](https://leetcode.com/problems/jump-game/) <br>
+思路： 原问题为： 能否从第一个元素跳到最后一个元素，重复子问题为，能否从该元素能跳到的元素跳到最后一个元素。 可以通过recur + memo写 <br>
+1491ms。。。 才通过。 大概读个思路吧，我看看别人写的在更新。
+```Java
+class Solution {
+    Boolean[] dp;
+    public boolean canJump(int[] nums) {
+        dp = new Boolean[nums.length];
+        return canJump(nums, 0);
+    }
+    
+    private boolean canJump(int[] nums, int currIdx) {
+        if (dp[currIdx] != null) {
+            return dp[currIdx];
+        }
+        
+        if (nums[currIdx] >= (nums.length - 1 - currIdx)) {
+            return true;
+        }
+        int num = nums[currIdx];
+        boolean curr = false;
+        boolean canJ = false;
+        for (int i = currIdx; i < currIdx + num; i++) {
+            if (canJ == true) {
+                break;
+            }
+            canJ = canJump(nums, i + 1);
+        }
+        dp[currIdx] = canJ;
+        return dp[currIdx];
+    }
+}
+```
+**To-DO ： Top-Down 重写**
+Bottom - up 
+```Java
+class Solution {
+    public boolean canJump(int[] nums) {
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        
+        for (int i = 1; i < nums.length; i++) {
+            if ((dp[i - 1] - 1) < 0) {
+                return false;
+            }
+            dp[i] = Math.max(dp[i - 1] - 1, nums[i]);
+        }
+        return true;
+    }
+}
+```
+[Jump Game II](https://leetcode.com/problems/jump-game-ii/) <br>
+思路： 原问题为： 跳到最后一个index的最小次数，子问题为，跳到之前格子的最小次数。 所以，dp[]存储跳到当前格子的最小次数。<br>
+DP代码：
+```Java
+class Solution {
+    public int jump(int[] nums) {
+        if (nums == null || nums.length <= 1) {
+            return 0;
+        }
+        // construction
+        int[] dp = new int[nums.length];
+        
+        // initialization
+        dp[0] = 0;
+        
+        // formulation
+        int idx = 0;
+        int steps = nums[0];
+        int maxIdx = 0;
+        int maxSteps = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if (i > idx + steps) {
+                idx = maxIdx;
+                steps = maxSteps;
+                maxIdx = 0;
+                maxSteps = 0;
+            }
+            if (nums[i] + i >= maxSteps + maxIdx) {
+                maxIdx = i;
+                maxSteps = nums[i];
+            }
+            
+            dp[i] = dp[idx] + 1;
+        }
+        return dp[nums.length - 1];
+    }
+}
+```
+思路2：
+贪心算法
+```Java
+class Solution {
+    public int jump(int[] nums) {
+        int maxPosition = 0;
+        int end = 0;
+        int steps = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            maxPosition = Math.max(maxPosition, nums[i] + i);
+            if (i == end) {
+                end = maxPosition;
+                steps++;
+            }
+        }
+        return steps;
+    }
+}
+```
+
+[Palindrome Partitioning II](https://leetcode.com/problems/palindrome-partitioning-ii/) <br>
+思路： 暂时不想做回文串的题目， 稍后回来,(暂时没啥思路)
+* 注意Array.fill的使用
 
 
+[Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/) <br>
+思路:一个有问题的思路：dp表示前i个数的最长子序列长度， dp[0] = 1, dp[i] = dp[i - 1] or dp[i] 取决于当前数字大小与之前nums在序列中的最大值的关系。 <br>
+修改后的思路: dp表示前i个数并选择当前数后的最长子序列长度， dp[i] = max(dp[j]) for j < i if nums[j] < nums[i] , 那么前i项的最长len为max(dp[0 : i])<br>
+```Java
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length < 1) {
+            return 0;
+        }
+        int res = 1;
+        
+        // construction
+        int[] dp = new int[nums.length];
+        
+        // init
+        dp[0] = 1;
+        
+        // formulation
+        for (int i = 0; i < nums.length; i++) {
+            int maxLen = 0;
+            int j = 0;
+            while (j < i) {
+                if (nums[j] < nums[i]) {
+                    maxLen = Math.max(maxLen, dp[j]);
+                }
+                j++;
+            }
+            dp[i] = maxLen + 1;
+            res = Math.max(dp[i], res);
+        }
+        return res;
+    }
+}
+```
+思路2： 贪心加二分
+class Solution {
+    //贪心 + 二分
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length < 1) {
+            return 0;
+        }
+        List<Integer> subs = new ArrayList<>();
+        subs.add(nums[0]);
+        int len = subs.size();
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > subs.get(len - 1)) {
+                subs.add(nums[i]);
+                len = subs.size();
+            } else {
+                int insertIdx = binarySearch(subs, nums[i]);
+                subs.remove(insertIdx);
+                subs.add(insertIdx, nums[i]);
+            }
+        }
+        return len;
+    }
+    
+    private int binarySearch(List<Integer> subs, int target) {
+        if (subs == null || subs.size() < 1) {
+            return 0;
+        }
+        int start = 0, end = subs.size() - 1;
+        while (start < end - 1) {
+            int middle = start + (end - start) / 2;
+            if (subs.get(middle) == target) {
+                return middle;
+            } else if (subs.get(middle) > target) {
+                end = middle;
+            } else {
+                start = middle;
+            }
+        }
+        
+        if (subs.get(start) < target) {
+            return end;
+        }
+        return start;
+    }
+}
+```
+**思路二中可以不使用list而使用一个长度为n的数组
 
+[Word Break](https://leetcode.com/problems/word-break/) <br>
+思路：dp[i]表示前i个子串能否被字典表示。然后讨论怎么从n推到 n+1就行了
+```Java
+class Solution {
+    //用的是自顶向下格式(格式不是方法)
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[] dp = new boolean[s.length()];
+        
+        for (int i = 0; i < s.length(); i++) {
+            dp[i] = search(s, i, wordDict, dp) ? true : false;
+        }
+        return dp[s.length() - 1];
+    }
+    
+    private boolean search(String s, int idx, List<String> wordDict, boolean[] dp){
+        for (int i = 0; i < idx; i++) {            
+            if (dp[i] == true && isIn(s.substring(i + 1, idx + 1), wordDict)) {
+                return true;
+            }
+        }
+        if (isIn(s.substring(0, idx + 1), wordDict)) {
+            return true;
+        }
+    return false;
+}
+    
+    private boolean isIn(String subs, List<String> wordDict) {
+        for (String item : wordDict) {
+            if(subs.equals(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+注意： 查找可以直接用一个set 代替，不用再遍历了。。, 初始化set时候可以直接用 HashSet<>(a list);
+```Java
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>(wordDict);
+        boolean[] dp = new boolean[s.length()];
+        
+        for (int i = 0; i < s.length(); i++) {
+            dp[i] = search(s, i, set, dp) ? true : false;
+        }
+        return dp[s.length() - 1];
+    }
+    
+    private boolean search(String s, int idx, Set<String> wordDict, boolean[] dp){
+        for (int i = 0; i < idx; i++) {            
+            if (dp[i] == true && wordDict.contains(s.substring(i + 1, idx + 1))) {
+                return true;
+            }
+        }
+        if (isIn(s.substring(0, idx + 1), wordDict)) {
+            return true;
+        }
+    return false;
+}
+```
+小结 <br>
+常见处理方式是给0位置占位，这样处理问题时一视同仁，初始化则在原来基础上length + 1; 返回结果 f(n)
+* 状态可以为前i个
+* 初始化length + 1
+* 取值 index = i - 1;
+* 返回值： f[n]或者f[m][n] <br>
 
-
-
-
-
+### Two Sequences DP (40%)
+[Longest Common Subsequence]<https://leetcode.com/problems/longest-common-subsequence/> <br>
+思路：
