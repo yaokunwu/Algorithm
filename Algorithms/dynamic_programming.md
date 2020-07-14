@@ -777,6 +777,57 @@ class Solution {
 
 ### Coins and Backpacks
 [Coin Change](https://leetcode.com/problems/coin-change/) <br>
-思路：
+思路： 原问题为凑给定钱数的最小coin个数，子问题为凑到amount - coin[0], amount - coin[1], amount - cpin[n] 最少需要多少coin个数
+top - down， 明天看bottom up
+```Java
+class Solution {
+    Integer[] dp;
+    int minCoin;
+    public int coinChange(int[] coins, int amount) {
+        if (amount < 1) {
+            return 0;
+        }
+        dp = new Integer[amount + 1];
+        dp[0] = 0;
+        minCoin = coins[0];
+        Set<Integer> set = new HashSet<>();
+        for (int item : coins) {
+            minCoin = Math.min(minCoin, item);
+            set.add(item);
+        }
+        int res = recur(set, amount);
+        return res;
+    }
+    
+    
+    private int recur(Set<Integer> set, int amount) {
+        if (set.contains(amount)) {
+            return 1;
+        }
+        if(amount < minCoin) {
+            return -1;
+        }
+        if (dp[amount] != null) {
+            return dp[amount];
+        }
+        int min = Integer.MAX_VALUE;
+        for (int item : set) {
+            if (item <= amount) {
+                int current = recur(set, amount - item);
+                if (current > 0 && current < min) {
+                    min = current;
+                }
+            }
+        }
 
+        dp[amount] = min == Integer.MAX_VALUE? -1 : min + 1;
+        return dp[amount];
+    }
+}
+```
+
+
+
+**与此POST无关**
+**TO-DO** : 对每道题进行划分，依据为 1. 从读题到 ·大概用什么解到 ·具体如何解（描述步骤）到 ·coding实现，看每次做题是哪一步卡住了 （多种思路分开写）统计做题时间，2. 然后概括当前题用了什么算法，思想，数据结构，3. 一周统计一次哪种类型的算法，思想或者数据结构掌握的不好，就针对性练习。  分类做题时（大概用什么解没有练习过）
 
