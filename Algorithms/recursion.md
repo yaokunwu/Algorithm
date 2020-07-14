@@ -109,11 +109,8 @@ class Solution {
     }
     
     private int recur(int N) {
-        if (N == 0) {
-            return 0;
-        }
-        if (N == 1) {
-            return 1;
+        if (N <= 1) {
+            return N;
         }
         if (dp[N] != null) {
             return dp[N];
@@ -127,13 +124,11 @@ class Solution {
 ```
 Bottom - up <br>
 两个值可解 <br>
+```Java
 class Solution {
     public int fib(int N) {
-        if (N == 0) {
-            return 0;
-        }
-        if (N == 1) {
-            return 1;
+        if (N <= 1) {
+            return N;
         }
         int first = 0;
         int second = 1;
