@@ -825,7 +825,183 @@ class Solution {
     }
 }
 ```
+Bottom up 思路： dp[i]表示攒i amount的钱需要的最小coin数 <br>
+**一定注意有时候有 -1的返回值
+```Java
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        
+        dp[0] = 0;
+        
+        for (int i = 1; i <= amount; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int coin : coins) {
+                if (i >= coin && dp[i - coin] != -1) {
+                    min = Math.min(min, dp[i - coin]);
+                }
+            }
+            dp[i] = min == Integer.MAX_VALUE? -1 : min + 1;
+        }
+        return dp[amount];
+    }
+}
+```
 
+[Backpack](https://www.lintcode.com/problem/backpack/description) <br>
+思路：递归， 原问题为一个size i 的背包最多装多少，子问题为 一个小于它的size背包能装多少。 需要参数为 size以及 item的index。<br>
+二维<br>
+```Java
+public class Solution {
+     Integer[][] dp;
+    public int backPack(int m, int[] A) {
+        dp = new Integer[A.length][m + 1];
+        int res = recur(m, 0, A);
+        return res;
+    }
+    
+    private int recur(int currSize, int itemIdx, int[] A) {
+        if (currSize == 0 || itemIdx >= A.length) {
+            return 0;
+        }
+        if (dp[itemIdx][currSize] != null) {
+            return dp[itemIdx][currSize];
+        }
+        
+        int left = 0, right = 0;
+        if (currSize >= A[itemIdx]) {
+            left = A[itemIdx] + recur(currSize - A[itemIdx], itemIdx + 1, A);
+        }
+        right = recur(currSize, itemIdx + 1, A);
+        dp[itemIdx][currSize] = Math.max(right, left);
+        return dp[itemIdx][currSize];
+    }
+}
+```
+**注意，记忆化搜索的动规，空间维度是不可以降的，只能通过bottom up降维
+
+思路：dp[i][j] 表示一个size为j的背包，装item index 0 - i的物品，最多能装多少
+```Java
+class Solution {
+    public int backPack(int m, int[] A) {
+        int[][] dp = new int[A.length][m  + 1];
+        
+        for (int row = 0; row < A.length; row++) {
+            dp[row][0] = 0;
+        }
+        for (int col = 0; col <= m; col++) {
+            dp[0][col] = col >= A[0]? A[0] : 0; 
+        }
+        
+        for (int row = 1; row < A.length; row++) {
+            for (int col = 1; col <= m; col++) {
+                int withCurr = 0, withoutCurr = 0;
+                if (col - A[row] >= 0) {
+                    withCurr = dp[row - 1][col - A[row]] + A[row];
+                }
+                withoutCurr = dp[row - 1][col];
+                dp[row][col] = Math.max(withCurr, withoutCurr);
+            }
+        }
+        return dp[A.length - 1][m];
+    }
+}
+```
+压缩维度
+```Java
+class Solution {
+    public int backPack(int m, int[] A) {
+        int[] dp = new int[m  + 1];
+        dp[0] = 0;
+        for (int row = 0; row < A.length; row++) {
+            for (int col = m; col >= 0; col--) {
+                int withCurr = 0, withoutCurr = 0;
+                if (col - A[row] >= 0) {
+                    withCurr = dp[col - A[row]] + A[row];
+                }
+                withoutCurr = dp[col];
+                dp[col] = Math.max(withCurr, withoutCurr);
+            }
+        }
+        return dp[m];
+    }
+}
+```
+
+[Backpack II](https://www.lintcode.com/problem/backpack-ii/description) <br>
+思路: 跟上题差不多，不过是多了个input
+Top-down
+```Java
+class Solution {
+    public int backPackII(int m, int[] A, int[] V) {
+        int res = recur(m, 0, A, V);
+        return res;
+    }
+    
+    private int recur(int currSize, int currIdx, int[] weights, int[] values) {
+        if (currSize == 0 || currIdx >= weights.length) {
+            return 0;
+        }
+        
+        int left = 0, right = 0;
+        if (currSize >= weights[currIdx]) {
+            left = values[currIdx] + recur(currSize - weights[currIdx], currIdx + 1, weights, values);
+        }
+        right = recur(currSize, currIdx + 1, weights, values);
+        
+        return Math.max(left, right);
+    }
+}
+```
+
+Bottom-up
+```Java
+class Solution {
+    public int backPackII(int m, int[] A, int[] V) {
+        int[][] dp = new int[A.length][m + 1];
+        
+        for (int row = 0; row < A.length; row++) {
+            dp[row][0] = 0;
+        }
+        
+        for (int col = 0; col <= m; col++) {
+            dp[0][col] = col >= A[0]? V[0] : 0;
+        }
+        
+        for (int row = 1; row < A.length; row++) {
+            for (int col = 1; col <= m ; col++) {
+                int withCurr = 0, withoutCurr = 0;
+                if (col >= A[row]) {
+                    withCurr = V[row] + dp[row - 1][col - A[row]];
+                }
+                withoutCurr = dp[row - 1][col];
+                dp[row][col] = Math.max(withCurr, withoutCurr);
+            }
+        }
+        return dp[A.length - 1][m];
+    }
+}
+```
+空间压缩后
+```Java
+class Solution {
+    public int backPackII(int m, int[] A, int[] V) {
+        int[] dp = new int[m + 1];
+        dp[0] = 0;
+        for (int row = 0; row < A.length; row++) {
+            for (int col = m; col >= 0; col--) {
+                int withCurr = 0, withoutCurr = 0;
+                if (col >= A[row]) {
+                    withCurr = V[row] + dp[col - A[row]];
+                }
+                withoutCurr = dp[col];
+                dp[col] = Math.max(withCurr, withoutCurr);
+            }
+        }
+        return dp[m];
+    }
+}
+```
 
 
 **与此POST无关**
