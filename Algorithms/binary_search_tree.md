@@ -122,3 +122,27 @@ class Solution {
 }
 ```
 
+[Balanced Binary Tree](https://leetcode.com/problems/balanced-binary-tree/)<br>
+思路：判断左右子树的高度不大于一就是balanced <br>
+```Java
+class Solution {
+    boolean isBalanced = true;
+    public boolean isBalanced(TreeNode root) {
+        maxDepth(root);
+        return isBalanced;
+    }
+    
+    private int maxDepth(TreeNode curr) {
+        if (curr == null) {
+            return 0;
+        }
+        int left = maxDepth(curr.left);
+        int right = maxDepth(curr.right);
+        if (Math.abs(left - right) > 1) {
+            isBalanced = false;
+        }
+        return Math.max(left, right) + 1;
+    }
+}
+```
+
