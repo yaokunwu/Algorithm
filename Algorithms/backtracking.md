@@ -171,4 +171,74 @@ class Solution {
     }
 }
 ```
+[Generate Parentheses](https://leetcode.com/problems/generate-parentheses/) <br>
+思路： 按照回溯的模板写就是下面这样, 我把选择列表先建起来方便理解，选择列表为左括号或右括号 （注意StringBuilder才是全局变量， 一个string + 另一个string其实会创建新的变量），注意常用函数，StringBuilder.deleteCharAt(). 当然可以用正常递归解。 <br>
+问题的关键为定义level参数是什么。
+```Java
+class Solution {
+    List<String> res;
+    public List<String> generateParenthesis(int n) {
+        //backtracking
+        res = new ArrayList<>();
+        StringBuilder curr = new StringBuilder();
+        String[] options = new String[] {"(", ")"};
+        backtracking(0, 0, n, curr, options);
+        return res;
+    }
+    
+    private void backtracking(int left, int right, int n, StringBuilder curr, String[] options) {
+        if (left == n && right == n) {
+            res.add(String.valueOf(curr));
+        }
+        
+        for (String s : options) {
+            if (left > n || left < right) {
+                return;
+            }
+            if (s == "(") {
+                curr.append("(");
+                backtracking(left + 1, right, n, curr, options);
+            } else {
+                curr.append(")");
+                backtracking(left, right + 1, n, curr, options);
+            }
+            curr.deleteCharAt(curr.length() - 1);
+        }
+    }
+}
+```
+当使用String 而不是StringBuilder时，不需要回溯
+```Java
+class Solution {
+    List<String> res;
+    public List<String> generateParenthesis(int n) {
+        //backtracking
+        res = new ArrayList<>();
+        String curr = "";
+        String[] options = new String[] {"(", ")"};
+        backtracking(0, 0, n, curr, options);
+        return res;
+    }
+    
+    private void backtracking(int left, int right, int n, String curr, String[] options) {
+        if (left == n && right == n) {
+            res.add(String.valueOf(curr));
+        }
+        
+        for (String s : options) {
+            if (left > n || left < right) {
+                return;
+            }
+            if (s == "(") {
+                backtracking(left + 1, right, n, curr + "(", options);
+            } else {
+                backtracking(left, right + 1, n, curr + ")", options);
+            }
+        }
+    }
+}
+```
+
 TO-DO： 查看 [回溯与不需要回溯的对比](https://leetcode-cn.com/problems/permutations/solution/hui-su-suan-fa-python-dai-ma-java-dai-ma-by-liweiw/) <br>
+
+
