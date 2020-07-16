@@ -135,7 +135,7 @@ public class Solution {
 ```
 
 [Bitwise AND of Numbers Range](https://leetcode.com/problems/bitwise-and-of-numbers-range/) <br>
-思路： 问题转化为找两个整数的公共前缀 (注意： 左移 << 只有这一种形式，低位补0)
+思路： 问题转化为找两个整数的公共前缀 (注意： 左移 << 只有这一种形式，低位补0)，技巧性太强。。
 ```Java
 class Solution {
     public int rangeBitwiseAnd(int m, int n) {
@@ -149,3 +149,16 @@ class Solution {
     }
 }
 ```
+思路2： 还是寻找公共前缀，
+```Java
+class Solution {
+    public int rangeBitwiseAnd(int m, int n) {
+        while (m < n) {
+            n = n & (n - 1);
+        }
+        return n;
+    }
+}
+```
+
+**TO-DO** 补single number系列
