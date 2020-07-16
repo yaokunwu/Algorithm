@@ -11,7 +11,7 @@
 * [二进制](https://github.com/yaokunwu/Algorithm/blob/master/Data%20Structure/binary_operation.md) <br>
 #### 基础算法篇
 * [二分搜索](https://github.com/yaokunwu/Algorithm/blob/master/Algorithms/binary_search.md)
-* [排序算法(https://github.com/yaokunwu/Algorithm/blob/master/Algorithms/sorting.md)
+* [排序算法](https://github.com/yaokunwu/Algorithm/blob/master/Algorithms/sorting.md)
 * [动态规划](https://github.com/yaokunwu/Algorithm/blob/master/Algorithms/dynamic_programming.md)
 #### 算法思维篇
 * [递归思维](https://github.com/yaokunwu/Algorithm/blob/master/Algorithms/recursion.md)
