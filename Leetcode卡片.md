@@ -90,3 +90,74 @@ class Solution {
     }
 }
 ```
+
+[Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/) <br>
+思路：题很经典，注意根节点的全局变量以及建立顺序。
+```Java
+class Solution {
+    Map<Integer, Integer> map;
+    int post_idx; // 此处必须要用全局变量维持同一状态
+    int[] postorder;
+    int[] inorder;
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        map = new HashMap<>();
+        this.postorder = postorder;
+        this.inorder = inorder;
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+        int inorderStart = 0, inorderEnd = inorder.length - 1;
+        post_idx = postorder.length - 1;
+        return build(inorderStart, inorderEnd);
+    }
+    
+    private TreeNode build(int inorderStart, int inorderEnd) {
+        if (inorderStart > inorderEnd) {
+            return null;
+        }
+        int rootVal = postorder[post_idx];
+        int rootIdx = map.get(rootVal);
+        TreeNode curr = new TreeNode(rootVal);
+        
+        post_idx--;
+        curr.right = build(rootIdx + 1, inorderEnd); //先右后左
+        curr.left = build(inorderStart, rootIdx - 1); //先右后左
+        return curr;
+    }
+}
+```
+
+[Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/) <br>
+思路：和上题一样，preorder正序construct即可。
+```Java
+class Solution {
+    int preIdx = 0;
+    Map<Integer, Integer> map;
+    int[] preorder, inorder;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        this.preorder = preorder;
+        this.inorder = inorder;
+        this.map = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+        return build(0, inorder.length - 1);
+    }
+    
+    private TreeNode build(int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        
+        int rootVal = preorder[preIdx];
+        TreeNode currNode = new TreeNode(rootVal);
+        
+        int idx = map.get(rootVal);
+        preIdx++;
+        
+        currNode.left = build(start, idx - 1);
+        currNode.right = build(idx + 1, end);
+        return currNode;
+    }
+}
+```
