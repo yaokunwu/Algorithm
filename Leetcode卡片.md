@@ -161,3 +161,75 @@ class Solution {
     }
 }
 ```
+
+[Serialize and Deserialize Binary Tree]
+思路： BFS序列化，反序列化时需要用到字符串转数组  **注意 String[] strArray = data.substring(1, data.length()-1).split(",");**
+```Java
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        StringBuilder res =  new StringBuilder();
+        res.append("[");
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int validNum = 1;
+        while (!queue.isEmpty() || validNum == 0) {
+            TreeNode curr = queue.poll();
+            if (curr == null) {
+                res.append("null,");
+            } else {
+                validNum--;
+                res.append(String.valueOf(curr.val));
+                res.append(",");
+                if (curr.left != null) {
+                    validNum++;
+                }
+                queue.offer(curr.left);
+                if (curr.right != null) {
+                    validNum++;
+                }
+                queue.offer(curr.right);
+            }
+        }
+        res.deleteCharAt(res.length() - 1);
+        res.append("]");
+        return res.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] strArray = data.substring(1, data.length() - 1).split(",");
+        if (strArray[0].equals("null")) {
+            return null;
+        }
+        TreeNode root = new TreeNode(Integer.valueOf(strArray[0]));
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int i = 1;
+        while (!queue.isEmpty()) {
+            TreeNode curr = queue.poll();
+            if (strArray[i].equals("null")) {
+                curr.left = null;
+                i++;
+            } else {
+                TreeNode leftNode = new TreeNode(Integer.valueOf(strArray[i]));
+                curr.left = leftNode;
+                queue.offer(leftNode);
+                i++;
+            }
+
+            if (strArray[i].equals("null")) {
+                curr.right = null;
+                // i++;
+            } else {
+                TreeNode rightNode = new TreeNode(Integer.valueOf(strArray[i]));
+                curr.right = rightNode;
+                queue.offer(rightNode);
+            }
+            i++;
+        }
+        return root;
+    }
+}
+```
