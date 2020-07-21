@@ -161,6 +161,30 @@ class Solution {
     }
 }
 ```
+[Convert Sorted Array to Binary Search Tree](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/) <br>
+思路： 这几道construct 二叉树的题思路差不多，都是先选择根节点，然后拆分向下。
+```Java
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums == null || nums.length < 1) {
+            return null;
+        }
+        int left = 0, right = nums.length - 1;
+        return build(nums, left, right);
+    }
+    
+    private TreeNode build(int[] nums, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        int middle = left + (right - left) / 2;
+        TreeNode currNode = new TreeNode(nums[middle]);
+        currNode.right = build(nums, middle + 1, right);
+        currNode.left = build(nums, left, middle - 1);
+        return currNode;
+    }
+}
+```
 
 [Serialize and Deserialize Binary Tree]
 思路： BFS序列化，反序列化时需要用到字符串转数组  **注意 String[] strArray = data.substring(1, data.length()-1).split(",");**
@@ -300,3 +324,5 @@ class Solution {
     } 
 }
 ```
+**这个题目的总结就是： 滑动窗口使条件2满足，维护所有元素查看条件1是否满足**
+
