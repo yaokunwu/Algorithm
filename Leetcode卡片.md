@@ -328,3 +328,131 @@ class Solution {
 ```
 **这个题目的总结就是： 滑动窗口使条件2满足，维护所有元素查看条件1是否满足**
 
+### Arrays and Strings
+#### 知识点
+Cast an array to a List
+Integer[] a = {0, 1, 2, 3, 4};  // **注意这里是Integer[]; 下次看pattern复习时看看是不是这么用的**
+v1 = new ArrayList<>(Arrays.asList(a));
+
+[Diagonal Traverse](https://leetcode.com/problems/diagonal-traverse/)<br>
+思路1: 二维矩阵的遍历问题, 自己写的好鸡儿麻烦。。， 重点看官方写的，右matrix的matching问题，把第一行和最后一列mapping成一维后就可以直接遍历了。
+```Java
+class Solution {
+    public int[] findDiagonalOrder(int[][] matrix) {
+        if (matrix == null || matrix.length < 1) {
+            return new int[0];
+        }
+        int m = matrix.length;
+        int n = matrix[0].length;
+        if (m == 1) {
+            return matrix[0];
+        }
+        int[] res = new int[m * n];
+        int end = 0;
+        boolean isnormal = true;
+        for (int col = 0; col < n; col++) {
+            Deque<Integer> levelList = new LinkedList<>();
+            int currRow = 0, currCol = col;
+            while (currRow < m && currCol >= 0) {
+                if (isnormal) {
+                    levelList.addFirst(matrix[currRow][currCol]);
+                } else {
+                    levelList.addLast(matrix[currRow][currCol]);
+                }
+                currRow++;
+                currCol--;
+            }
+            isnormal = !isnormal;
+            while (!levelList.isEmpty()) {
+                res[end] = levelList.removeFirst();
+                end++;
+            }
+        }
+        for (int row = 1; row < m; row++) {
+            Deque<Integer> levelList = new LinkedList<>();
+            int currRow = row, currCol = n - 1;
+            while (currRow < m && currCol >= 0) {
+                if (isnormal) {
+                    levelList.addFirst(matrix[currRow][currCol]);
+                } else {
+                    levelList.addLast(matrix[currRow][currCol]);
+                }
+                currRow++;
+                currCol--;
+            }
+            isnormal = !isnormal;
+            while (!levelList.isEmpty()) {
+                res[end] = levelList.removeFirst();
+                end++;
+            }
+        }
+        return res;
+    }
+}
+```
+与上述思路相同： 但简化了很多, 其实本题的实质和level order traversal一样。。
+```Java
+class Solution {
+    public int[] findDiagonalOrder(int[][] matrix) {
+        if (matrix == null || matrix.length < 1) {
+            return new int[0];
+        }
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] res = new int[m * n];
+        int end = 0;
+        Deque<Integer> levelList = new LinkedList<>();
+        for (int idx = 0; idx < m + n - 1; idx++) {     // 把需要遍历的idx转换为一维进行遍历， 然后下面从一维转化为二维进行操作。
+            int currRow = idx < n ? 0 : idx - n + 1;  // 注意这两行
+            int currCol = idx < n ? idx : n - 1;      // 注意这两行
+            while (currRow < m && currCol >= 0) {
+                if (idx % 2 == 0) {
+                    levelList.addFirst(matrix[currRow][currCol]);
+                } else {
+                    levelList.addLast(matrix[currRow][currCol]);
+                }
+                currRow++;
+                currCol--;
+            }
+            while (!levelList.isEmpty()) {
+                res[end] = levelList.removeFirst();
+                end++;
+            }
+        }
+        return res;
+    }
+}
+```
+**注意此题还可以直接reverse一个list，需要记住，Collections.reverse(List), list.clear()**
+
+[Spiral Matrix](https://leetcode.com/problems/spiral-matrix/) <br>
+思路:模拟问题，注意 **需要掌握方向的改变技巧以及标记矩阵的使用**。
+```Java
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> res = new ArrayList<>();
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] directions = {{0, 1}, {1, 0}, {-0, -1}, {-1, 0}};  //需要掌握
+        int row = 0, col = 0;
+        boolean[][] visited = new boolean[m][n]; //需要掌握
+        int total = m * n;
+        int dIdx = 0;
+        for (int i = 0; i < total; i++) {
+            res.add(matrix[row][col]);
+            visited[row][col] = true;
+            int nextRow = row + directions[dIdx][0], nextCol = col + directions[dIdx][1];
+            if (nextRow >= m || nextRow < 0 || nextCol >= n || nextCol < 0 || visited[nextRow][nextCol]) {
+                dIdx = (dIdx + 1) % 4;
+            }
+            row += directions[dIdx][0];
+            col += directions[dIdx][1];
+        }
+        return res;
+    }
+}
+```
+
