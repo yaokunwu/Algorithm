@@ -162,7 +162,7 @@ class Solution {
 }
 ```
 [Convert Sorted Array to Binary Search Tree](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/) <br>
-思路： 这几道construct 二叉树的题思路差不多，都是先选择根节点，然后拆分向下。
+思路： 这几道construct 二叉树的题思路差不多，都是先选择根节点，然后拆分向下。 (BST)
 ```Java
 class Solution {
     public TreeNode sortedArrayToBST(int[] nums) {
@@ -257,6 +257,8 @@ public class Codec {
     }
 }
 ```
+
+### Binary Search Tree
 
 [Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/) <br>
 思路： 滑动窗口的思路，窗口中的元素需要储存在二叉树中方便提取最接近当前元素的值 用来判断条件是否成立。 <br>
