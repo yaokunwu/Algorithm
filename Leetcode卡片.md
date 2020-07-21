@@ -233,3 +233,70 @@ public class Codec {
     }
 }
 ```
+
+[Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/) <br>
+思路： 滑动窗口的思路，窗口中的元素需要储存在二叉树中方便提取最接近当前元素的值 用来判断条件是否成立。 <br>
+**新增知识点： treeSet的operation
+```Java
+class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        TreeSet<Long> set = new TreeSet<>();
+        int start = 0;
+        for (int end = 0; end < nums.length; end++) {
+            Long currVal = (long) nums[end];
+            Long s = set.ceiling(currVal);
+            if (s != null && s - currVal <= t) {
+                return true;
+            }
+            s = set.floor(currVal);
+            if (s != null && currVal - s <= t) {
+                return true;
+            }
+            set.add(currVal);
+            if (set.size() > k) {
+                set.remove((long) nums[start]);
+                start++;
+            }
+        }
+        return false;
+    }
+}
+```
+**注意treeSet (自平衡二叉树) 中 treeSet.ceiling(), treeSet.floor(), treeSet.remove(), treeSet.add() 的使用，相当于二叉树的搜索，删除和添加操作， 以及 long 和 int的转换**<br>
+思路2： 模板还是滑动窗口，不过储存元素换为了桶储存，Map<桶id, 值> <br>
+```Java
+class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        if (nums == null || nums.length <= 1 || t < 0) {
+            return false;
+        }
+        Map<Long, Long> map = new HashMap<>();
+        int start = 0;
+        Long width = (long) t + 1; // 因为计算id时， width要当除数，不能为0;
+        for (int end = 0; end < nums.length; end++) {
+            Long currVal = (long) nums[end];
+            Long currId = getId(currVal, width);
+            if (map.containsKey(currId)) {
+                return true;
+            }
+            if (map.containsKey(currId - 1) && currVal - map.get(currId - 1) <= t) {
+                return true;
+            }
+            if (map.containsKey(currId + 1) && map.get(currId + 1) - currVal <= t) {
+                return true;
+            }
+            map.put(currId, currVal);
+            if (map.size() > k) {
+                Long removedId = getId((long) nums[start], width);
+                map.remove(removedId);
+                start++;
+            }
+        }
+        return false;
+    }
+    
+    private Long getId(Long num, Long width) {
+        return num < 0 ? (num + 1) / width - 1 : num / width;
+    } 
+}
+```
