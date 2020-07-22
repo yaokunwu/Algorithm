@@ -537,3 +537,87 @@ class Solution {
 }
 ```
 **TO-DO:这道题有个位运算解法，回头看**
+
+
+## 今天没做笔记迈。。
+[Reverse Words in a String](https://leetcode.com/problems/reverse-words-in-a-string/) <br>
+思路： 自己用双StringBuilder AC了， 主要看一下官方的代码
+```Java
+class Solution {
+    public StringBuilder trimSpaces(String s) {
+        int left = 0, right = s.length() - 1;
+        // 去掉字符串开头的空白字符
+        while (left <= right && s.charAt(left) == ' ') ++left;
+
+        // 去掉字符串末尾的空白字符
+        while (left <= right && s.charAt(right) == ' ') --right;
+
+        // 将字符串间多余的空白字符去除
+        StringBuilder sb = new StringBuilder();
+        while (left <= right) {
+            char c = s.charAt(left);
+
+            if (c != ' ') sb.append(c);
+            else if (sb.charAt(sb.length() - 1) != ' ') sb.append(c);
+
+            ++left;
+        }
+        return sb;
+    }
+
+    public void reverse(StringBuilder sb, int left, int right) {
+        while (left < right) {
+            char tmp = sb.charAt(left);
+            sb.setCharAt(left++, sb.charAt(right));
+            sb.setCharAt(right--, tmp);
+        }
+    }
+
+    public void reverseEachWord(StringBuilder sb) {
+        int n = sb.length();
+        int start = 0, end = 0;
+
+        while (start < n) {
+            // 循环至单词的末尾
+            while (end < n && sb.charAt(end) != ' ') ++end;
+            // 翻转单词
+            reverse(sb, start, end - 1);
+            // 更新start，去找下一个单词
+            start = end + 1;
+            ++end;
+        }
+    }
+
+    public String reverseWords(String s) {
+        StringBuilder sb = trimSpaces(s);
+
+        // 翻转字符串
+        reverse(sb, 0, sb.length() - 1);
+
+        // 翻转每个单词
+        reverseEachWord(sb);
+
+        return sb.toString();
+    }
+}
+```
+
+思路2： 常用API
+```Java
+class Solution {
+    public String reverseWords(String s) {
+        s = s.trim();
+        List<String> sArray = new ArrayList<>(Arrays.asList(s.split(" ")));
+        Collections.reverse(sArray);
+        return String.join(" ", sArray);
+    }
+}
+```
+
+注意 List<Integer> res = new ArrayList<>(Arrays.asList( Integer array )) ** 注意里面必须是integer array **
+常用API：
+StringBuilder.setCharAt(idx, char);
+StringBuilder.setLength(0) : 为清空StringBuilder
+String.join(" ", list)
+s.trim(); 去除s的前后空格
+s.split(" "); 把s里面的字符按空格分开成String[] 
