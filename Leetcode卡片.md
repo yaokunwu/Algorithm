@@ -525,7 +525,7 @@ class Solution {
             int add1 = i >= a.length() ? 0 : a.charAt(a.length() - 1 - i) - '0';   // 注意这个减0的操作
             int add2 = i >= b.length() ? 0 : b.charAt(b.length() - 1 - i) - '0';
             int digit = add1 + add2 + carry;
-            carry = digit > 1 ? 1 : 0;
+            carry = digit / 2;
             digit = digit % 2;
             res.append(digit);
         }
@@ -536,3 +536,4 @@ class Solution {
     }
 }
 ```
+**TO-DO:这道题有个位运算解法，回头看**
