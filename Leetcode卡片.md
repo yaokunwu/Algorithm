@@ -457,4 +457,82 @@ class Solution {
 ```
 **TO-DO 这题还有个按层模拟，有时间可以看一下**
 
+#### String
+知识点： <br>
+1. String s1 = new String(s2); 拷贝s2给s1;
+2. String s1 = "Something";  s1 == "Something" 为true
+3. Java 无法改变已初始化好的string
+4. s1.indexOf(char) : 返回第一个char的位置
+5. s1.lastIndexOf(char) : 返回最后一个char的位置
+6. s1.substring()  4，5，6这三个operation会take o（N）时间
 
+[Add Binary](https://leetcode.com/problems/add-binary/) <br>
+思路： 自己写的垃圾版本
+```Java
+class Solution {
+    public String addBinary(String a, String b) {
+        StringBuilder res = new StringBuilder();
+        int carry = 0;
+        int aLen = a.length();
+        int bLen = b.length();
+        int length = Math.max(aLen, bLen);
+        if (bLen < aLen) {
+            for (int i = 0; i < aLen - bLen; i++) {
+                b = "0" + b;
+            }
+        } else if (aLen < bLen) {
+            for (int i = 0; i < bLen - aLen; i++) {
+                a = "0" + a;
+            }
+        }
+        char[] charArray1 = a.toCharArray();
+        char[] charArray2 = b.toCharArray();
+        for (int i = length - 1; i >= 0; i--) {
+            int value1 = Integer.parseInt(String.valueOf(charArray1[i]));
+            int value2 = Integer.parseInt(String.valueOf(charArray2[i]));
+            int value = value1 + value2 + carry;
+            if (value > 1) {
+                value = value % 2;
+                carry = 1;
+            } else {
+                carry = 0;
+            }
+            res.append(String.valueOf(value));
+        }
+        if (carry == 1) {
+            res.append("1");
+        }
+        res = res.reverse();
+        return res.toString();
+    }
+}
+```
+优雅package版：只适用于长度较短的binary string
+class Solution {
+    public String addBinary(String a, String b) {
+        return Integer.toBinaryString(Integer.parseInt(a, 2) + Integer.parseInt(b, 2));
+    }
+}
+
+思路2： i可以正序遍历，string可以倒序
+```Java
+class Solution {
+    public String addBinary(String a, String b) {
+        StringBuilder res = new StringBuilder();
+        int n = Math.max(a.length(), b.length());
+        int carry = 0;
+        for (int i = 0; i < n; i++) {
+            int add1 = i >= a.length() ? 0 : a.charAt(a.length() - 1 - i) - '0';   // 注意这个减0的操作
+            int add2 = i >= b.length() ? 0 : b.charAt(b.length() - 1 - i) - '0';
+            int digit = add1 + add2 + carry;
+            carry = digit > 1 ? 1 : 0;
+            digit = digit % 2;
+            res.append(digit);
+        }
+        if (carry == 1) {
+            res.append("1");
+        }
+        return res.reverse().toString();
+    }
+}
+```
