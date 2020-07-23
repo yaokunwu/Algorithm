@@ -538,8 +538,6 @@ class Solution {
 ```
 **TO-DO:这道题有个位运算解法，回头看**
 
-
-## 今天没做笔记迈。。
 [Reverse Words in a String](https://leetcode.com/problems/reverse-words-in-a-string/) <br>
 思路： 自己用双StringBuilder AC了， 主要看一下官方的代码
 ```Java
@@ -615,9 +613,32 @@ class Solution {
 ```
 
 注意 List<Integer> res = new ArrayList<>(Arrays.asList( Integer array )) ** 注意里面必须是integer array **
-常用API：
-StringBuilder.setCharAt(idx, char);
-StringBuilder.setLength(0) : 为清空StringBuilder
-String.join(" ", list)
-s.trim(); 去除s的前后空格
-s.split(" "); 把s里面的字符按空格分开成String[] 
+常用API： <br>
+StringBuilder.setCharAt(idx, char);<br>
+StringBuilder.setLength(0) : 为清空StringBuilder<br>
+String.join(" ", list)<br>
+s.trim(); 去除s的前后空格<br><br>
+s.split(" "); 把s里面的字符按空格分开成String[] <br>
+
+### Hash Table
+[Design HashSet](https://leetcode.com/problems/design-hashset/) <br>
+思路： 注意在设计的过程中，建立set 和建立bucket最后分离操作，降低设计复杂度。
+
+常用API
+LinkedList.indexOf(Object)用于元素的查找， -1 表示不存在 <br>
+LinkedList.remove(Object) 直接移除元素
+LinkedList.contains(Object)直接查找是否存在
+
+**注意： 一定要注意在遍历list过程中的删除问题，一般不要用for(item : list)这种，一边遍历一边删除可能需要倒序。。** 
+
+
+
+
+
+
+
+
+
+
+
+
