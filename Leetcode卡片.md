@@ -631,14 +631,339 @@ LinkedList.contains(Object)直接查找是否存在
 
 **注意： 一定要注意在遍历list过程中的删除问题，一般不要用for(item : list)这种，一边遍历一边删除可能需要倒序。。** 
 
+* hashmap.putIfAbsent();
+
+[Isomorphic Strings](https://leetcode.com/problems/isomorphic-strings/) <br>
+思路：一道简单题，有种解法是char array 和 char相关的，回头看，挺重要的。
 
 
+[Minimum Index Sum of Two Lists](https://leetcode.com/explore/learn/card/hash-table/184/comparison-with-other-data-structures/1177/) <br>
+思路： 自己用hashtable和优先级序列做的。。有点麻烦。
+```Java
+class Solution {
+    private class Node {
+        String key;
+        int idx;
+        private Node(String key, int idx) {
+            this.key = key;
+            this.idx = idx;
+        }
+    }
+    public String[] findRestaurant(String[] list1, String[] list2) {
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < list1.length; i++) {
+            map.put(list1[i], i);
+        }
+        
+        PriorityQueue<Node> minHeap = new PriorityQueue<>((a, b) -> a.idx - b.idx);
+        for (int i = 0; i < list2.length; i++) {
+            if (map.containsKey(list2[i])) {
+                int idx = map.get(list2[i]) + i;
+                if (minHeap.isEmpty()) {
+                    minHeap.offer(new Node(list2[i], idx));
+                } else if (idx < minHeap.peek().idx) {
+                    while (!minHeap.isEmpty() && idx < minHeap.peek().idx) {
+                        minHeap.poll();
+                    }
+                    minHeap.offer(new Node(list2[i], idx));
+                } else if (idx == minHeap.peek().idx) {
+                    minHeap.offer(new Node(list2[i], idx));
+                }
+            }
+        }
+        String[] res = new String[minHeap.size()];
+        for (int i = minHeap.size() - 1; i >= 0; i--) {
+            res[i] = minHeap.poll().key;
+        }
+        return res;
+    }
+}
+```
+一定要注意一边遍历一边删除的操作
 
+官方思路: 哈希表，key为下标和，value为list of string
+```Java
+class Solution {
+    public String[] findRestaurant(String[] list1, String[] list2) {
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < list1.length; i++) {
+            map.put(list1[i], i);
+        }
+        int minSum = Integer.MAX_VALUE;
+        List<String> res = new ArrayList<>();
+        for (int i = 0; i < list2.length; i++) {
+            if (map.containsKey(list2[i])) {
+                int currSum = map.get(list2[i]) + i;
+                if (currSum < minSum) {
+                    res.clear();
+                    res.add(list2[i]);
+                    minSum = currSum;
+                } else if (currSum == minSum) {
+                    res.add(list2[i]);
+                }
+            }
+        }
+        String[] sArray = new String[res.size()];
+        return res.toArray(sArray);
+    }
+}
+```
+对哈希表的使用有所欠缺，需要继续加强训练 <br>
+List.toArray(res); (to array 表示去哪个array) 这个array的type必须和List中的type一致。
+Arrays.copyOfRange(int[], 0, index); 拷贝部分数组
 
+[Valid Sudoku](https://leetcode.com/explore/learn/card/hash-table/185/hash_table_design_the_key/1126/) <br>
+难点： 这里的box index 有点难想。
+```Java
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        //主要就是找个key
+       Set<Character>[][] set = new HashSet[3][9];
+        for (int i = 0; i < set.length; i++) {
+            for (int j = 0; j < set[0].length; j++) {
+                set[i][j] = new HashSet<>();
+            }
+        }
+        
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[0].length; col++) {
+                char currChar = board[row][col];
+                
+                if (currChar == '.') {
+                    continue;
+                }
+                
+                int key3 = (row / 3) * 3 + col / 3;
+                
+                if (set[0][row].contains(currChar)) {
+                    return false;
+                } else {
+                    set[0][row].add(currChar);
+                }
+                
+                if (set[1][col].contains(currChar)) {
+                    return false;
+                } else {
+                    set[1][col].add(currChar);
+                }
+                
+                if (set[2][key3].contains(currChar)) {
+                    return false;
+                } else {
+                    set[2][key3].add(currChar);
+                }
+            }
+        }
+        return true;
+    }
+}
+```
+注意 ** 创建array的set或者各种object的方法。**
 
+[Find Duplicate Subtrees](https://leetcode.com/explore/learn/card/hash-table/185/hash_table_design_the_key/1127/) <br>
+思路： 官方给的思路： 每棵子树的序列化结果不同，储存在map中就好。
+我写的这个有点问题，最好是bottom up dfs，然后map建立的value应该是次数，而不是node
+```Java
+class Solution {
+    public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
+        List<TreeNode> res = new ArrayList<>();
+        if (root == null) { return res; }
+        Map<List<Integer>, TreeNode> map = new HashMap<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode curr = stack.pop();
+            List<Integer> currList = dfs(curr);
+            if (map.containsKey(currList)) {
+                res.add(map.get(currList));
+                continue;
+            }
+            map.put(currList, curr);
+            if (curr.right != null) {
+                stack.push(curr.right);
+            }
+            if (curr.left != null) {
+                stack.push(curr.left);
+            }
+        }
+        return res;
+    }
+    
+    private List<Integer> dfs(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode curr = stack.pop();
+            if (curr != null) {
+                res.add(curr.val);
+                stack.push(curr.right);
+                stack.push(curr.left);
+            } else {
+                res.add(null);
+            }
+        }
+        return res;
+    }
+}
+```
+修改完map后：
+```Java
+class Solution {
+    public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
+        List<TreeNode> res = new ArrayList<>();
+        if (root == null) { return res; }
+        Map<List<Integer>, Integer> map = new HashMap<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode curr = stack.pop();
+            List<Integer> currList = dfs(curr);
+            map.put(currList, map.getOrDefault(currList, 0) + 1);
+            if (map.get(currList) == 2) {
+                res.add(curr);
+            }
+            if (curr.right != null) {
+                stack.push(curr.right);
+            }
+            if (curr.left != null) {
+                stack.push(curr.left);
+            }
+        }
+        return res;
+    }
+    
+    private List<Integer> dfs(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode curr = stack.pop();
+            if (curr != null) {
+                res.add(curr.val);
+                stack.push(curr.right);
+                stack.push(curr.left);
+            } else {
+                res.add(null);
+            }
+        }
+        return res;
+    }
+}
+```
+修改完traversal顺序后
+```Java
+class Solution {
+    Map<List<Integer>, Integer> map;
+    List<TreeNode> res;
+    public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
+        res = new ArrayList<>();
+        map = new HashMap<>();
+        dfs(root);
+        return res;
+    }
+    
+    private List<Integer> dfs(TreeNode root) {
+        if (root == null) {
+            List<Integer> curr = new ArrayList<>();
+            curr.add(null);
+            return curr;
+        }
+        
+        List<Integer> left = dfs(root.left);
+        List<Integer> right = dfs(root.right);
+        left.addAll(right);
+        left.add(0, root.val);
+        List<Integer> curr = new ArrayList<>(left);  //***
+        map.put(curr, map.getOrDefault(curr, 0) + 1);
+        if (map.get(curr) == 2) {
+            res.add(root);
+        }
+        return left;
+    }
+}
+```
+**注意：**
+* 1. 在向map中加入数据时要确保数据不会变动
+* 2. 连接两个list可以用 list1.addAll(list2);
 
+[RandomizedSet](https://leetcode.com/problems/insert-delete-getrandom-o1/) <br>
+```Java
+class RandomizedSet {
 
+    /** Initialize your data structure here. */
+    List<Integer> list;
+    Map<Integer, Integer> map;
+    Random random;
+    public RandomizedSet() {
+        list = new ArrayList<>();
+        map = new HashMap<>();
+        random = new Random();
+    }
+    
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    public boolean insert(int val) {
+        if (map.containsKey(val)) {
+            return false;
+        } else {
+            map.put(val, list.size());
+            list.add(val);
+            return true;
+        }
+    }
+    
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    public boolean remove(int val) {
+        if (!map.containsKey(val)) {
+            return false;
+        } else {
+            int idx = map.get(val);
+            int last = list.get(list.size() - 1);
+            list.set(idx, last);
+            map.put(last, idx);
+            list.remove(list.size() - 1);
+            map.remove(val);
+            return true;
+        }
+        
+    }
+    
+    /** Get a random element from the set. */
+    public int getRandom() {
+        return list.get(random.nextInt(list.size()));
+    }
+}
+```
+这个题的分析挺好， arraylist的random access 时间复杂度是o1， 都忘了。。 <br>
+注意使用 random.nextInt(), 以及 list.set(index, value);
 
-
-
-
+[4Sum II](https://leetcode.com/explore/learn/card/hash-table/187/conclusion-hash-table/1134/) <br>
+思路： 我用了backtracking，o（n)4的复杂度，我感觉可以用动规。 n sum 算法
+```Java
+class Solution {
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+        Map<Integer, Integer> map1 = new HashMap<>();
+        Map<Integer, Integer> map2 = new HashMap<>();
+        int n = A.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int sum = A[i] + B[j];
+                map1.put(sum, map1.getOrDefault(sum, 0) + 1);
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int sum = C[i] + D[j];
+                map2.put(sum, map2.getOrDefault(sum, 0) + 1);
+            }
+        }
+        int res = 0;
+        for (int sum : map1.keySet()) {
+            if (map2.containsKey(0 - sum)) {
+                res += map1.get(sum) * map2.get(0 - sum);
+            }
+        }
+        return res;
+    }
+}
+```
