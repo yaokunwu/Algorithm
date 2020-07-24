@@ -938,29 +938,23 @@ class RandomizedSet {
 注意使用 random.nextInt(), 以及 list.set(index, value);
 
 [4Sum II](https://leetcode.com/explore/learn/card/hash-table/187/conclusion-hash-table/1134/) <br>
-思路： 我用了backtracking，o（n)4的复杂度，我感觉可以用动规。 n sum 算法
+思路： 我用了backtracking，o（n)4的复杂度，我感觉可以用动规。 n sum 算法. 这里用的是two sum
 ```Java
 class Solution {
     public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
-        Map<Integer, Integer> map1 = new HashMap<>();
-        Map<Integer, Integer> map2 = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         int n = A.length;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int sum = A[i] + B[j];
-                map1.put(sum, map1.getOrDefault(sum, 0) + 1);
-            }
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                int sum = C[i] + D[j];
-                map2.put(sum, map2.getOrDefault(sum, 0) + 1);
+                map.put(sum, map.getOrDefault(sum, 0) + 1);
             }
         }
         int res = 0;
-        for (int sum : map1.keySet()) {
-            if (map2.containsKey(0 - sum)) {
-                res += map1.get(sum) * map2.get(0 - sum);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int sum = C[i] + D[j];
+                res += map.getOrDefault(-sum, 0);
             }
         }
         return res;
