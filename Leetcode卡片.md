@@ -961,3 +961,30 @@ class Solution {
     }
 }
 ```
+
+### Binary Search
+注意 ** 
+```Java
+        int a = 2147395599;
+        a = a / 2;
+        long b = (long) (a * a); // 先计算两个int 的乘积，再cast 为 long， 会造成越界
+        long b = (long) a * a; // 先将首个a cast 为long 型 然后进行相乘计算，相当于 两个long相乘，不会越界
+```
+[Pow(x, n)](https://leetcode.com/problems/powx-n/) <br>
+思路： 快速幂算法，注意： Math.abs(Integer.MIN_VALUE) = Integer.MIN_VALUE; 需要先把n转化为long,或者直接加负号
+```Java
+class Solution {
+    public double myPow(double x, int n) {
+        long count = n;
+        return n >= 0 ? recur(x, count) : 1 / recur(x, -count);   
+    }
+    
+    private double recur(double x, long n) {
+        if (n == 0) {
+            return 1;
+        }
+        double prev = recur(x, n / 2);
+        return n % 2 == 0 ? prev * prev : prev * prev * x;
+    }
+}
+```
