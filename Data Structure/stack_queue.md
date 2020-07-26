@@ -53,7 +53,7 @@ class MinStack {
 [Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation) <br>
 
 思路：逆波兰表达式，遇数字进栈，遇字符出栈两次做运算并进栈 <br>
-
+这题太傻逼了。。 记着一定用.equals 在判定string相等时，有的傻逼编译器不会通过 ==
 ```Java
 class Solution {
     public int evalRPN(String[] tokens) {
