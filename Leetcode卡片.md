@@ -1146,3 +1146,58 @@ class Solution {
     }
 }
 ```
+回溯：
+```Java
+class Solution {
+    int sum = 0; 
+    int count = 0;
+    boolean found = false;
+    int[] list;
+    int len;
+    public int numSquares(int n) {
+        //构造选择列表
+        len = (int) Math.sqrt(n);
+        list = new int[len];
+        for (int i = 0; i < len; i++) {
+            list[i] = (i + 1) * (i + 1);
+        }
+        
+        while (true) { // 从最小的组合个数开始循环
+            backtracking(n, 0, null);
+            if (found) { // 找到了就返回当前所需的组合的个数，因为从0开始所以能保证找到时组合的个数最小
+                return count;
+            }
+            count++; //没找到就把组合的个数加1
+        }
+    }
+    
+    private void backtracking(int n, int size, Integer prev) {
+        //递归出口
+        if (size == count) {  //达到了设置的组合个数
+            if (sum == n) {  //找到了， 返回
+                found = true;
+                return;
+            } else { //没找到， 返回
+                return;
+            }
+        }
+
+        //从选择列表进行选择
+        for (int i = 0; i < len; i++) { 
+            // 剪枝，比如需要找组合个数为2. 第一次DFS找了1 ,4 那下一次循环到4的时候就不用找1了， prev记录上一层所选择的元素
+            if (prev != null && list[i] < prev) { 
+                continue;
+            }
+            //选择这个值
+            sum += list[i];
+            //进入下一层
+            backtracking(n, size + 1, list[i]);
+            //回溯
+            sum -= list[i];
+        }
+    }
+}
+```
+上面两道题总结一下，BFS的规律：
+起始就是树和图的level order traversal，要注意state得如何定义的。
+第一题的backtracking不好做因为没有固定的选择列表。 而且要注意，第一题不能用backtracking因为是不一定能得到target的，由于不清楚循环次数并及时终止，可能会陷入死循环。
