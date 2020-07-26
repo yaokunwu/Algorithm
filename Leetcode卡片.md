@@ -988,3 +988,161 @@ class Solution {
     }
 }
 ```
+
+Stack && Queue
+[Number of Islands](https://leetcode.com/explore/learn/card/queue-stack/231/practical-application-queue/1374/) <br>
+思路： 用了queue和visited一次性解决。
+```Java
+class Solution {
+    int nRows, nCols;
+    public int numIslands(char[][] grid) {
+        //BFS
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+        int count = 0;
+        this.nRows = grid.length;
+        this.nCols = grid[0].length;
+        boolean[][] visited = new boolean[nRows][nCols];
+        for (int row = 0; row < nRows; row++) {
+            for (int col = 0; col < nCols; col++) {
+                if (grid[row][col] == '1' && visited[row][col] == false) {
+                    count++;
+                    bfs(row, col, grid, visited);
+                }
+            }
+        }
+        return count;
+    }
+    
+    private void bfs(int row, int col, char[][] grid, boolean[][] visited) {
+        int idx = row * nCols + col;
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(idx);
+        visited[row][col] = true;
+        int[][] directions = new int[][] {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
+            int r = curr / nCols;
+            int c = curr % nCols;
+            for (int[] direction : directions) {
+                int newR = r + direction[0];
+                int newC = c + direction[1];
+                if (newR >= 0 && newR < nRows && newC >= 0 && newC < nCols && grid[newR][newC] == '1' && visited[newR][newC] == false) {
+                    queue.offer(newR * nCols + newC);
+                    visited[newR][newC] = true;
+                }
+            }
+        }
+    }
+}
+```
+
+[Open the Lock](https://leetcode.com/explore/learn/card/queue-stack/231/practical-application-queue/1375/) <br>
+思路：经典BFS题，需要首先明确state是什么，state直接的转化关系， 因为是求最近距离，所以考虑BFS。 从画出的图上一个状态到另一个状态看可以发现是n ary tree的 level order traversal， 只需要标记visited。
+```Java
+class Solution {
+    // 经典BFS
+    // 从图上看可以发现是n ary tree的 level order traversal， 只需要标记visited, 找到目标后返回当前层数就行了。。
+    public int openLock(String[] deadends, String target) {
+        String start = "0000";
+        Set<String> visited = new HashSet<>();
+        for (String str : deadends) {
+            visited.add(str);
+        }
+        if (visited.contains("0000")) {
+            return -1;
+        }
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(start);
+        visited.add(start);
+        int step = 0;
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            for (int i = 0; i < levelSize; i++) {
+                String curr = queue.poll();
+                if (curr.equals(target)) {
+                    return step;
+                }
+                String[] nextAll = create(curr);
+                for (String next : nextAll) {
+                    if (!visited.contains(next)) {
+                        queue.offer(next);
+                        visited.add(next);
+                    }
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+    
+    private String[] create(String str) {
+        String[] res = new String[8];
+        int start = 0;
+        for (int i = 0; i < 4; i++) {
+            char[] curr = str.toCharArray();
+            char currChar = curr[i];
+            curr[i] = convert(currChar, true);
+            res[start] = String.valueOf(curr);
+            start++;
+            curr[i] = convert(currChar, false);
+            res[start] = String.valueOf(curr);
+            start++;
+        }
+        return res;
+    }
+    
+    private char convert(char chr, boolean isNext) {
+        if  (chr == '9' && isNext) {
+            return '0';
+        }
+        if (chr == '0' && !isNext) {
+            return '9';
+        }
+        if (isNext) {
+            return (char) (chr + 1);
+        } else {
+            return (char) (chr - 1);
+        }
+    }
+}
+```
+
+[Perfect Squares](https://leetcode.com/problems/perfect-squares/) <br>
+思路： bfs和回溯我都写了一下，这题动规也能解。。, 还是挺难的
+```Java
+class Solution {
+    public int numSquares(int n) {
+        //BFS 从 开始state 0 到达 target n 的最短路径
+        int len = (int) Math.sqrt(n);
+        int[] list = new int[len];
+        for (int i = 0; i < len; i++) {
+            list[i] = (i + 1) * (i + 1);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        Set<Integer> set = new HashSet<>();
+        queue.offer(0);
+        set.add(0);
+        int step = 0;
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            for (int i = 0; i < levelSize; i++) {
+                int curr = queue.poll();
+                if (curr == n) {
+                    return step;
+                }
+                for (int j = 0; j < len; j++) {
+                    int next = curr + list[j];
+                    if (!set.contains(next)) {
+                        queue.offer(next);
+                        set.add(next);
+                    }
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+}
+```
