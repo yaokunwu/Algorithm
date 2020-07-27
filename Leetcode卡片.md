@@ -1201,3 +1201,163 @@ class Solution {
 上面两道题总结一下，BFS的规律：
 起始就是树和图的level order traversal，要注意state得如何定义的。
 第一题的backtracking不好做因为没有固定的选择列表。 而且要注意，第一题不能用backtracking因为是不一定能得到target的，由于不清楚循环次数并及时终止，可能会陷入死循环。
+
+
+dfs
+[Target Sum](https://leetcode.com/explore/learn/card/queue-stack/232/practical-application-stack/1389/) <br>
+思路： 1.回溯，
+```Java
+class Solution {
+    // backtracking
+    int res;  // 结果
+    int remain; // 回溯需要一个全局状态。
+    public int findTargetSumWays(int[] nums, int S) {
+        res = 0;
+        remain = S;
+        backtracking(nums, 0);
+        return res;
+    }
+    
+    private void backtracking(int[] nums, int level) {
+        if (level == nums.length) {  // 回溯终止条件
+            if (remain == 0) {
+                res++;
+            } 
+            return;
+        } 
+        //因为只有两个选择所以没写for循环，当选择很多时，改为for循环（也就是n-ary preorder traversal）
+        remain -= nums[level]; // 选择当前值
+        backtracking(nums, level + 1); // 进入下一层
+        remain += nums[level]; //回溯， 因为引入了全局状态
+
+        remain += nums[level]; //选择另一条路
+        backtracking(nums, level + 1); // 进入下一层
+        remain -= nums[level]; // 回溯
+    }
+}
+```
+思路2： preorder traversal
+class Solution {
+    // preorder traversal
+    int res;  // 结果
+    public int findTargetSumWays(int[] nums, int S) {
+        res = 0;
+        preOrder(nums, 0, S);
+        return res;
+    }
+    
+    private void preOrder(int[] nums, int level, int remain) {
+        if (level == nums.length) {  // base case
+            if (remain == 0) {
+                res++;
+            } 
+            return;
+        }
+        
+        // //简写为
+//         preOrder(nums, level + 1, remain - nums[level]);  
+//         //相当于先定义 int other1 = remain - nums[level], 然后call preOrder(nums, level + 1, other1);
+        
+//         preOrder(nums, level + 1, remain + nums[level]);
+//         //同理相当于先定义 int other2 = remain - nums[level], 然后call preOrder(nums, level + 1, other2);
+        
+        //可以看下面代码做更深理解 （与上等价）
+        remain -= nums[level];   // 做减法
+        preOrder(nums, level + 1, remain); // 进入下一层，返回后不需要回溯
+        
+        remain += nums[level];  // 还原当前局部变量，不属于回溯
+        
+        remain += nums[level]; // 做加法
+        preOrder(nums, level + 1, remain); // 进入下一层， 返回后不需要回溯
+    }
+}
+思路3： postorder traversal
+```Java
+class Solution {
+    // postorder traversal
+    public int findTargetSumWays(int[] nums, int S) {
+        return postOrder(nums, 0, S);
+    }
+    
+    private int postOrder(int[] nums, int level, int remain) {
+        if (level == nums.length) {  // base case
+            if (remain == 0) {
+                return 1;
+            } 
+            return 0;
+        }
+        
+        int left = postOrder(nums, level + 1, remain + nums[level]);
+        int right = postOrder(nums, level + 1, remain - nums[level]);
+        
+        return left + right;
+    }
+}
+```
+思路4： postorder traversal + 备忘录 （自顶向下动规）,考虑到每层和remain都有返回值，可以直接加备忘录
+```Java
+class Solution {
+    // postorder traversal + memo
+    Map<String, Integer> map;
+    public int findTargetSumWays(int[] nums, int S) {
+        map = new HashMap<>();
+        return postOrder(nums, 0, S);
+    }
+
+    private int postOrder(int[] nums, int level, int remain) {
+        if (level == nums.length) {  // base case
+            if (remain == 0) {
+                return 1;
+            } 
+            return 0;
+        }
+        String key = level + "," + remain;
+        if (map.containsKey(key)) {
+            return map.get(key);
+        }
+        
+        int left = postOrder(nums, level + 1, remain + nums[level]);
+        int right = postOrder(nums, level + 1, remain - nums[level]);
+        map.put(key, left + right);
+        
+        return map.get(key);
+    }
+}
+```
+思路5： BFS
+class Solution {
+    //BFS
+    public int findTargetSumWays(int[] nums, int S) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(S);
+        int level = 0;
+        int count = 0;
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            for (int i = 0; i < levelSize; i++) {
+                int remain = queue.poll();
+                if (level == nums.length) {
+                    if (remain == 0) {
+                        count++;
+                    }
+                } else {
+                    queue.offer(remain - nums[level]);
+                    queue.offer(remain + nums[level]);
+                }
+            }
+            level++;
+        }
+        return count;
+    }
+}
+超时了
+思路5： 动规 bottom up
+
+backtracking也是dfs
+**TO-DO 一会看一下两种递归树**
+总结一下 dfs, backtracking, preorder traversal, postorder traversal, dp, 之间的关系。。。
+首先 preorder traversal和postorder traversal 都属于 dfs （也有说postorder 属于分治，都无所谓)
+backtracking的实质dfs中的preorder traversal， 是无法添加memorization的，也就无法变为自顶向下动态规划。
+而有些时候（部分题中），preorder traversal可以转化为postorder traversal或者只能用postroder解决并且有重复子问题，这样递归中的参数可以添加到memorization中，所以可以将backtracking改为动规。
+dp的自顶向下+memo和自底而上效果相同，可以相互转化。
+还有状态和f（x）的问题
