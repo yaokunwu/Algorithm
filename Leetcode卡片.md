@@ -1366,3 +1366,149 @@ dp的自顶向下+memo和自底而上效果相同，可以相互转化。
 ## backtracking
 Backtracking实际上如果没有剪枝的话就跟bruteforce search一样了。所以只有有剪枝操作时才叫backtracking <br>
 The backtracking way of solving this problem would stop going down a path when the path doesn't seem right. When we say the path doesn't seem right we mean we come across a node which will never lead to the right result. As we come across such node we back-track. That is go back to the previous node and take the next step.
+
+
+[Sudoku Solver]() <br>
+```Java
+class Solution {
+    Set<Integer>[][] sets; // char也行
+    List<int[]> levels;
+    char[][] board;
+    boolean solved = false;
+    public void solveSudoku(char[][] board) {
+        this.board = board;
+        sets = new HashSet[3][9];
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 9; col++) {
+                sets[row][col] = new HashSet<>();
+            }
+        }
+        levels = new ArrayList<>();
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                int diaIdx = (row / 3) * 3 + col / 3;
+                if (board[row][col] != '.') {
+                    int currValue = board[row][col] - '0';
+                    placeCurr(currValue, row, col);
+                } else {
+                    levels.add(new int[] {row, col});
+                }
+            }
+        }
+        backtracking(0);
+    }
+    
+    private void placeCurr(int value, int row, int col) {
+        int diaIdx = (row / 3) * 3 + col / 3;
+        sets[0][row].add(value);
+        sets[1][col].add(value);
+        sets[2][diaIdx].add(value);
+        board[row][col] = (char) (value + '0');
+    }
+    
+    private void removeCurr(int value, int row, int col) {
+        int diaIdx = (row / 3) * 3 + col / 3;
+        sets[0][row].remove(value);
+        sets[1][col].remove(value);
+        sets[2][diaIdx].remove(value);
+        board[row][col] = '.';
+    }
+    
+    private void backtracking(int level) {
+        if (level == levels.size()) {
+            solved = true;
+            return;
+        }
+        for (int i = 0; i < 9; i++) {
+            int[] idxex = levels.get(level);
+            int row = idxex[0];
+            int col = idxex[1];
+            if (checking(i + 1, row, col)) {
+                placeCurr(i + 1, row, col);
+                backtracking(level + 1);
+                if (solved == true) {
+                    return;
+                }
+                removeCurr(i + 1, row, col);
+            }
+        }
+    }
+    
+    private boolean checking(int value, int row, int col) {
+        int diaIdx = (row / 3) * 3 + col / 3;
+        if (sets[0][row].contains(value) || sets[1][col].contains(value) || sets[2][diaIdx].contains(value)) {
+            return false;
+        }
+        return true;
+    }
+}
+```
+**注意** 
+1. 从int 转 char 用 char chr = (char) (int + '0');
+2. Character.getNumericValue(int)
+3. 如果全局变量是需要返回的，那么在找到solution后需要checking and return。 否则会继续回溯把全局变量修改。
+
+### Recursion 转化 iteration
+[Same Tree](https://leetcode.com/problems/same-tree/) <br>
+```Java
+class Solution {
+    
+    private boolean check(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }
+        if (p == null || q == null) {
+            return false;
+        }
+        if (p.val != q.val) {
+            return false;
+        }
+        return true;
+    }
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (!check(p, q)) { return false; }
+        Deque<TreeNode> stackP = new LinkedList<>();
+        Deque<TreeNode> stackQ = new LinkedList<>();
+        stackP.add(p);
+        stackQ.add(q);
+        while (!stackP.isEmpty() && !stackQ.isEmpty()) {
+            TreeNode currP = stackP.poll();
+            TreeNode currQ = stackQ.poll();
+            if (!check(currP, currQ)) { return false; }
+            if (currP != null) {
+                stackP.add(currP.left);
+                stackP.add(currP.right);
+            }
+            if (currQ != null) {
+                stackQ.add(currQ.left);
+                stackQ.add(currQ.right);
+            }
+        }
+        if (stackP.isEmpty() && stackQ.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+}
+```
+**注意： 因为有两棵树，所以需要两个stack来分别保存遍历顺序。 而且判断与遍历顺序无关，可以用(queue) BFS。**
+附上正统后序递归解法
+```Java
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        // Base case
+        if (p == null && q == null) {
+            return true;
+        }
+        if (p == null || q == null) {
+            return false;
+        }
+        // left
+        boolean left = isSameTree(p.left, q.left);
+        // right
+        boolean right = isSameTree(p.right, q.right);
+        // combine
+        return left && right && p.val == q.val;
+    }
+}
+```
