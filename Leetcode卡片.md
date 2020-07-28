@@ -1512,3 +1512,56 @@ class Solution {
     }
 }
 ```
+
+我的分治思想的理解还是稍微薄弱了点，还没法达到自己看到题目就知道子问题怎么划分（类比为从二叉树的当前节点怎么分为去后面的节点），需要做分治类的抽象题目来提高分治思想。 比如说下面这道题最优解为o（n）的单调栈解法，但实际上当没有遇到过这问题的时候，分治法才是标准解答nlogn。<br>
+问题的关键在于， 怎么把问题规模减小，怎么合并，关于规模的参数怎么设计，这些都要想的。
+[Largest Rectangle in Histogram](https://leetcode.com/explore/learn/card/recursion-ii/507/beyond-recursion/2901/) <br>
+```Java
+//面试官难道想看你这解法？？ 想多了吧
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int[] newHeights = new int[heights.length + 2];
+        System.arraycopy(heights, 0, newHeights, 1, heights.length);
+        Deque<Integer> stack = new LinkedList<>();
+        stack.push(0);
+        int maxArea = 0;
+        for (int i = 1; i < newHeights.length; i++) {
+            while (newHeights[i] < newHeights[stack.peek()]) {
+                int currIdx = stack.pop();
+                int currHeight = newHeights[currIdx];
+                maxArea = Math.max(maxArea, currHeight * (i - stack.peek() - 1));
+            }
+            stack.push(i);
+        }
+        return maxArea;
+    }
+}
+```
+常规解法(分治）<br>
+在做题没有思路的时候（面试时），把问题规模缩小化，用分治思想才是应该首先考虑的，尽管对于这道题分治不是最优解，但对于在面试中展现自己思考解决问题的能力时，用分治把这题做对我相信一定没有问题。 而单调栈有可能在短时间内想不到或者说做的题不够多的话是没有办法想到的。
+```Java
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        return dfs(heights, 0, heights.length - 1);
+    }
+    //虽然是先处理了当前节点，但是还是bottom up postorder traversal。
+    private int dfs(int[] heights, int left, int right) {
+        if (left > right) {
+            return 0;
+        }
+        int minIdx = left;
+        for (int i = left + 1; i < right; i++) {
+            if (heights[i] < heights[minIdx]) {
+                minIdx = i;
+            }
+        }
+        int leftMax = dfs(heights, left, minIdx - 1);
+        int rightMax = dfs(heights, minIdx + 1, right);
+        
+        int maxArea = heights[minIdx] * (right - left + 1);
+        maxArea = Math.max(maxArea, leftMax);
+        maxArea = Math.max(maxArea, rightMax);
+        return maxArea;
+    }
+}
+```
