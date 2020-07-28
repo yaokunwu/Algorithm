@@ -105,68 +105,68 @@ class Solution {
 ```
 
 [Permutations](https://leetcode.com/problems/permutations/) <br>
-思路： 回溯，记录已选择过的元素
+思路： 回溯，冲突的发生就是index相同。有冲突就剪枝就完事了。
 ```java
 class Solution {
     List<List<Integer>> res;
-    boolean[] mark;
+    Set<Integer> set;
     public List<List<Integer>> permute(int[] nums) {
         res = new ArrayList<>();
-        mark = new boolean[nums.length];
+        set = new HashSet<>();
         backtracking(nums, new ArrayList<>());
         return res;
     }
     
-    private void backtracking(int[] nums, List<Integer> permu) {
-        if (permu.size() == nums.length) {
-            res.add(new ArrayList<>(permu));
+    private void backtracking(int[] nums, List<Integer> solution) {
+        if (solution.size() == nums.length) {
+            res.add(new ArrayList<>(solution));
             return;
         }
         
         for (int i = 0; i < nums.length; i++) {
-            if (mark[i] == true) {
-                continue;
+            if (!set.contains(i)) {
+                solution.add(nums[i]);
+                set.add(i);
+                backtracking(nums, solution);
+                solution.remove(solution.size() - 1);
+                set.remove(i);
             }
-            permu.add(nums[i]);
-            mark[i] = true;
-            backtracking(nums, permu);
-            permu.remove(permu.size() - 1);
-            mark[i] = false;
         }
     }
 }
 ```
 
 [Permutations II](https://leetcode.com/problems/permutations-ii/> <br>
-思路：回溯，同层剪枝问题
+思路：回溯，冲突的发生除了index相同还有值相同。(我自己的想法有点问题, 必须要先排序)
 ```Java
 class Solution {
     List<List<Integer>> res;
-    int depth;
-    boolean[] check;
-    public List<List<Integer>> permuteUnique(int[] nums) {
+    Set<Integer> set;
+    public List<List<Integer>> permute(int[] nums) {
         Arrays.sort(nums);
         res = new ArrayList<>();
-        check = new boolean[nums.length];
-        backtracking(nums, new ArrayList<>(), 0);
+        set = new HashSet<>();
+        backtracking(nums, new ArrayList<>());
         return res;
     }
     
-    private void backtracking(int[] nums, List<Integer> permu, int depth) {
-        if (permu.size() == nums.length) {
-            res.add(new ArrayList<>(permu));
+    private void backtracking(int[] nums, List<Integer> solution) {
+        if (solution.size() == nums.length) {
+            res.add(new ArrayList<>(solution));
             return;
         }
         
         for (int i = 0; i < nums.length; i++) {
-            if ((i > 0 && nums[i] == nums[i - 1] && check[i - 1] == false) || check[i] == true) { //注意剪枝的细节
-                continue;
+            if (!set.contains(i)) {
+                if (i > 0 && nums[i] == nums[i - 1] && !set.contains(i - 1)) {
+                    continue;
+                }
+                solution.add(nums[i]);
+                set.add(i);
+                backtracking(nums, solution);
+                solution.remove(solution.size() - 1);
+                set.remove(i);
             }
-            permu.add(nums[i]);
-            check[i] = true;
-            backtracking(nums, permu, depth + 1);
-            permu.remove(permu.size() - 1);
-            check[i] = false;
         }
     }
 }
