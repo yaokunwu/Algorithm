@@ -194,7 +194,7 @@ class Solution {
 }
 ```
 
-**Breadth First search** **- (Level order traversal)**
+**Breadth First search** **- (Level order traversal, iteration)**
 ```Java
 class Solution {  
     public List<Integer> bfs(TreeNode root) {
@@ -218,6 +218,33 @@ class Solution {
     }
 }
 ```
+**Breadth First search** **- (Level order traversal, Recursion)**
+实际上遍历顺序是preorder traversal ，但是达到了level order的效果，不过具体别的题中可能没什么用。。
+```Java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        dfs(res, 0, root);
+        return res;
+    }
+    
+    private void dfs(List<List<Integer>> res, int level, TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        
+        if (res.size() <= level) {
+            List<Integer> currLevel = new ArrayList<>();
+            res.add(currLevel);
+        }
+        res.get(level).add(root.val);
+        dfs(res, level + 1, root.left);
+        dfs(res, level + 1, root.right);
+    }
+}
+```
+
+** 
 * * *
 #### **习题及答案
 
