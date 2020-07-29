@@ -630,6 +630,19 @@ LinkedList.remove(Object) 直接移除元素
 LinkedList.contains(Object)直接查找是否存在
 
 **注意： 一定要注意在遍历list过程中的删除问题，一般不要用for(item : list)这种，一边遍历一边删除可能需要倒序。。** 
+**补充，不要使用 for each循环进行元素的添加删除操作， remove元素请使用Iterator方式，如果并发操作，需要对Iterator对象加锁。**
+示例：
+```Java
+ List<String> list = new ArrayList<String>();
+list.add("1");
+list.add("2");
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()) {
+    String item = iterator.next();
+    if (condition for deletion) {
+        iterator.remove();
+    }
+}
 
 * hashmap.putIfAbsent();
 
