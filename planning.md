@@ -10,7 +10,7 @@
 
 # 修改后的计划
 
-27 - 31号 把 leetcode卡片（还剩recursion 2 和 trie） + interactive course dp做完。
+27 - 31号 把 leetcode卡片（trie） + interactive course dp做完。 
 
 1号开始
 早 1 easy 2 medium （大概8月底可以刷完前300的medium + easy）
@@ -21,3 +21,5 @@
 mock interview + 投简历 + 做做hard
 
 拿到面试 开始刷tag和面经
+
+**progress 力扣200题斩， 达成时间 7月28号**
