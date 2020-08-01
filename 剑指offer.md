@@ -111,3 +111,49 @@ class Solution {
     }
 }
 ```
+
+[剑指 Offer 31. 栈的压入、弹出序列](https://leetcode-cn.com/problems/zhan-de-ya-ru-dan-chu-xu-lie-lcof/) <br>
+模拟法的使用, 官方的代码好简洁，我的代码好垃圾。。
+```Java
+class Solution {
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Deque<Integer> stack = new LinkedList<>();
+        int j = 0;
+        for (int i = 0; i < pushed.length; i++) {
+            if (pushed[i] != popped[j]) {
+                stack.push(pushed[i]);
+            } else {
+                j++;
+                while (!stack.isEmpty() && stack.peek() == popped[j]) {
+                    stack.pop();
+                    j++;
+                }
+            }
+        }
+
+        for (; j < popped.length; j++) {
+            if (popped[j] != stack.pop()) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```
+官方的供参考
+```Java
+class Solution {
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Deque<Integer> stack = new LinkedList<>();
+        int i = 0;
+        for (int num : pushed) {
+            stack.push(num);
+            while (!stack.isEmpty() && popped[i] == stack.peek()) {
+                stack.pop();
+                i++;
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+```
