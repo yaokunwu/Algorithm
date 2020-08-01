@@ -1,1 +1,92 @@
+废话不多说，直接上题
 
+
+[剑指 Offer 04. 二维数组中的查找](https://leetcode-cn.com/problems/er-wei-shu-zu-zhong-de-cha-zhao-lcof/) <br>
+思路： 分治. 注意**二维矩阵一定要把图画出来看边界条件，不要想当然**, 一定要理清搜索空间，base case有哪些的问题
+```Java
+class Solution {
+    public boolean findNumberIn2DArray(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return false;
+        }
+        return dfs(matrix, target, 0, matrix.length - 1, 0, matrix[0].length - 1);
+    }
+    
+    private boolean dfs(int[][] matrix, int target, int top, int down, int left, int right) {
+        if (top > down || left > right) {
+            return false;
+        } else if (target > matrix[down][right] || target < matrix[top][left]) {
+            return false;
+        }
+        
+        int middle = left + (right - left) / 2;
+        int row = top;
+        for (; row <= down; row++) {
+            if (matrix[row][middle] == target) {
+                return true;
+            } else if (matrix[row][middle] > target) {
+                break;
+            }
+        }
+        return dfs(matrix, target, row, down, left, middle - 1) || dfs(matrix, target, top, row - 1, middle + 1, right);
+    }
+}
+```
+
+[剑指 Offer 07. 重建二叉树](https://leetcode-cn.com/problems/zhong-jian-er-cha-shu-lcof/) <br>
+这题不熟练到爆炸
+
+
+[剑指 Offer 12. 矩阵中的路径](https://leetcode-cn.com/problems/ju-zhen-zhong-de-lu-jing-lcof/) <br>
+思路: 好经典的一道dfs 回溯(所以以后需要判断是否需要回溯)
+
+[剑指 Offer 14- I. 剪绳子](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/) <br>
+动规，不太好想。这道题dp可以一个参数，为啥dynamic pattern里面那个unbounded knapsack不能用一个参数。
+//判断重复子问题倒是很好判断。
+
+** 注意 == 的运算高于位运算符， if (n & 1 == 1) {} 要写成 if ((n & 1) == 1) {}
+
+
+[剑指 Offer 26. 树的子结构](https://leetcode-cn.com/problems/shu-de-zi-jie-gou-lcof/) <br>
+思路: 刚开始不会做，但是看了答案以后发现了和常规dfs的共同点。就是遍历+搜索。 和矩阵中找匹配字符串其实是同一种思想。
+在这讲一下共通点：
+1. char矩阵中匹配字符串时，首先需要遍历char矩阵，并对以每一个char为起的位置来进行对字符串的匹配。
+类比到这题就是 首先需要遍历整个二叉树， 并对以每个node为起点的位置来进行对子树的匹配。
+2.不同点在于， 遍历char矩阵只需要for循环即可，而遍历二叉树需要recursion， 所以才会出现双递归。
+3. 遍历顺序和结果无关，dfs，bfs都可以，并且，树没有相同指向问题，不需要标记矩阵。
+```Java
+class Solution {
+    public boolean isSubStructure(TreeNode A, TreeNode B) {
+        if (A == null || B == null) {  // 相当于for循环结束了都没找到
+            return false;
+        }
+
+        if (dfs(A, B)) {  // 相当于遍历到当前节点，需要检查是否从该节点出发可以匹配到。
+            return true;
+        }
+
+        return isSubStructure(A.left, B) || isSubStructure(A.right, B); // 当前的没找到，那么继续遍历下一个节点，相当于for循环到下一个char
+    }
+
+    private boolean dfs(TreeNode A, TreeNode B) {
+        //检查从当前节点开始是否匹配
+
+        // 3个边界检查，相当于检查矩阵的搜索范围是否超标。
+        if (A == null && B == null) {
+            return true;
+        }
+        if (B == null) {
+            return true;
+        }
+        if (A == null) {
+            return false;
+        }
+        // 数字不相等，相当于字符串不相等。
+        if (A.val != B.val) {
+            return false;
+        }
+        // 相等了，再进行下一个字符串的判断。
+        return dfs(A.left, B.left) && dfs(A.right, B.right);
+    }
+}
+```
