@@ -92,4 +92,22 @@ class Solution {
 ```
 
 [剑指 Offer 27. 二叉树的镜像](https://leetcode-cn.com/problems/er-cha-shu-de-jing-xiang-lcof/) <br>
-这题我都不会， 我感觉我完了。。。 继续练
+这题我都不会， 我感觉我完了。。。 继续练，我没想到是直接用原来的树，我还在想怎么新建树
+注意虽然可以先交换两个节点，但是其实如果在真实问题上必须先考虑加入stack的先后顺序问题。
+```Java
+class Solution {
+    public TreeNode mirrorTree(TreeNode root) {
+        if(root == null) return null;
+        Stack<TreeNode> stack = new Stack<>() {{ add(root); }};
+        while(!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            if(node.left != null) stack.add(node.left);
+            if(node.right != null) stack.add(node.right);
+            TreeNode tmp = node.left;
+            node.left = node.right;
+            node.right = tmp;
+        }
+        return root;
+    }
+}
+```
