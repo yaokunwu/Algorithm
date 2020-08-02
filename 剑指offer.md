@@ -228,7 +228,7 @@ class Solution {
     }
 }
 ```
-修改后
+修改后,回溯的标准写法
 ```Java
 class Solution {
     List<List<Integer>> res;
@@ -257,6 +257,40 @@ class Solution {
             backtracking(curr.right, single, remain - curr.val);
             single.remove(single.size() - 1);
         }
+    }
+}
+```
+下一个版本，注意比较这两种写法。
+```Java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    List<List<Integer>> res;
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        res = new ArrayList<>();
+        backtracking(root, new ArrayList<>(), sum);
+        return res;
+    }
+
+    private void backtracking(TreeNode curr, List<Integer> single, int remain) {
+        if (curr == null) {
+            return;
+        }
+        single.add(curr.val);
+        if (curr.left == null && curr.right == null && remain == curr.val) {
+            res.add(new ArrayList<>(single));
+            //这里不能return，所以并不是回溯的标准写法。
+        }
+        backtracking(curr.left, single, remain - curr.val);
+        backtracking(curr.right, single, remain - curr.val);
+        single.remove(single.size() - 1);
     }
 }
 ```
