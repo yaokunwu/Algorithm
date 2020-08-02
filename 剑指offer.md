@@ -190,3 +190,73 @@ class Solution {
     }
 }
 ···
+
+
+[剑指 Offer 34. 二叉树中和为某一值的路径](https://leetcode-cn.com/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/) <br>
+思路都会，就是回溯，讲个细节问题, 先上错误代码： 可以得知，最好在backtracking做选择的时候，就把不满足条件的先排除了，不要等进下一层循环了再排除，有可能回溯的时候有问题。
+```Java
+class Solution {
+    List<List<Integer>> res;
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        backtracking(root, new ArrayList<>(), sum);
+        return res;
+    }
+
+    private void backtracking(TreeNode curr, List<Integer> single, int remain) {
+        if (curr == null) {
+            return;
+        }
+        single.add(curr.val);
+        // 终止条件只用做终止条件。
+        if (curr.left == null && curr.right == null) {
+            if (remain == curr.val) {
+                res.add(new ArrayList<>(single));
+            }
+            return;
+        }
+        ❌//回溯下一层之前先判断是否可以，提前剪枝。
+        backtracking(curr.left, single, remain - curr.val);
+        single.remove(single.size() - 1);
+        
+        backtracking(curr.right, single, remain - curr.val);
+        single.remove(single.size() - 1);
+        
+    }
+}
+```
+修改后
+```Java
+class Solution {
+    List<List<Integer>> res;
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        backtracking(root, new ArrayList<>(), sum);
+        return res;
+    }
+
+    private void backtracking(TreeNode curr, List<Integer> single, int remain) {
+        single.add(curr.val);
+        if (curr.left == null && curr.right == null) {
+            if (remain == curr.val) {
+                res.add(new ArrayList<>(single));
+            }
+            return;
+        }
+        if (curr.left != null) {
+            backtracking(curr.left, single, remain - curr.val);
+            single.remove(single.size() - 1);
+        }
+        if (curr.right != null) {
+            backtracking(curr.right, single, remain - curr.val);
+            single.remove(single.size() - 1);
+        }
+    }
+}
+```
