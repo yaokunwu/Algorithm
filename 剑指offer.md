@@ -157,3 +157,36 @@ class Solution {
     }
 }
 ```
+
+[剑指 Offer 33. 二叉搜索树的后序遍历序列](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/) <br>
+思路： 其实这道题说post order的意思就是让你从后往前寻找根节点。 我没想到的是怎么对问题进行分解, 不过还是看了思路后自己写出来的。 官方的解答更巧妙
+```Java
+class Solution {
+    public boolean verifyPostorder(int[] postorder) { 
+        if (postorder == null || postorder.length == 0) {
+            return true;
+        }
+        return verify(postorder, 0, postorder.length - 1, null, null);
+    }
+
+    private boolean verify(int[] postorder, int left, int right, Integer lowerBound, Integer upperBound) {
+        if (left > right) {
+            return true;
+        }
+        int currVal = postorder[right];
+        if (lowerBound != null && currVal < lowerBound) {
+            return false;
+        }
+        if (upperBound != null && currVal > upperBound) {
+            return false;
+        }
+        int cut = right - 1;
+        while (cut >= 0 && postorder[cut] > currVal) {
+            cut--;
+        }
+        boolean leftTree = verify(postorder, left, cut, lowerBound, currVal);
+        boolean rightTree = verify(postorder, cut + 1, right - 1, currVal, upperBound);
+        return leftTree && rightTree;
+    }
+}
+···
