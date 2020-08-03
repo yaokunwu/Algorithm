@@ -294,3 +294,83 @@ class Solution {
     }
 }
 ```
+
+[剑指 Offer 35. 复杂链表的复制](https://leetcode-cn.com/problems/fu-za-lian-biao-de-fu-zhi-lcof/) <br>
+思路：其实和图的拷贝题完全一样，需要记录访问过的节点避免死循环，用map记录，而如果这个题是二叉树的拷贝就不需要map了。。
+```Java
+class Solution {
+    Map<Node, Node> map;
+    public Node copyRandomList(Node head) {
+        map = new HashMap<>();
+        return dfs(head);
+    }
+
+    private Node dfs(Node currNode) {
+        if (currNode == null) {
+            return null;
+        }
+        if (map.containsKey(currNode)) {
+            return map.get(currNode);
+        }
+
+        Node copyedNode = new Node(currNode.val);
+        map.put(currNode, copyedNode);
+        copyedNode.next = dfs(currNode.next);
+        copyedNode.random = dfs(currNode.random);
+        return copyedNode;
+    }
+}
+```
+
+[剑指 Offer 36. 二叉搜索树与双向链表](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/) <br>
+这题有点难度，如果prev node当作遍历中参数的话会不容易做，最好定义全局变量
+要注意的点：二叉树返回时的路径问题。
+```Java
+class Solution {
+    Node head;
+    Node tail;
+    public Node treeToDoublyList(Node root) {
+        if (root == null) {
+            return null;
+        }
+        inOrder(root, null);
+        head.left = tail;
+        tail.right = head;
+        return head;
+    }
+
+    private Node inOrder(Node curr, Node prev) {
+        if (curr == null) {
+            return null;
+        }
+        if (curr.left != null) {
+            prev = inOrder(curr.left, prev);
+        }
+        tail = curr;
+        if (head == null) {
+            head = curr;
+        }
+        curr.left = prev;
+        if (prev != null) {
+            prev.right = curr;
+        }
+        prev = inOrder(curr.right, curr);
+        return prev == null ? curr : prev;
+    }
+}
+```
+
+注意哈希表的一些api使用
+map.entrySet();
+Map.Entry<> 
+entry.getKey();
+entry.getValue();
+
+[剑指 Offer 45. 把数组排成最小的数](https://leetcode-cn.com/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/) <br>
+很经典的一道考察对排序算法理解的应用题。<br>
+注意对arrays.copyOfRange()的掌握。
+String a.compareTo()的掌握
+两个int类的string可以通过直接compareTo判断
+
+[剑指 Offer 46. 把数字翻译成字符串](https://leetcode-cn.com/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/) <br>
+动规，头一次见到还是不知道怎么下手。
