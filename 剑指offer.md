@@ -374,3 +374,53 @@ String a.compareTo()的掌握
 
 [剑指 Offer 46. 把数字翻译成字符串](https://leetcode-cn.com/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/) <br>
 动规，头一次见到还是不知道怎么下手。
+
+[剑指 Offer 56 - II. 数组中数字出现的次数 II](https://leetcode-cn.com/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-lcof/) <br>
+```Java
+class Solution {
+    public int singleNumber(int[] nums) {
+        int[] count = getCount(nums);
+        count = modCount(count);
+        int num = restore(count);
+        return num;
+    }
+
+    private int[] getCount(int[] nums) {
+        int[] count = new int[32];
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 31; j >= 0; j--) {
+                count[j] += nums[i] & 1;
+                nums[i] = nums[i] >>> 1;
+            }
+        }
+        return count;
+    }
+
+    private int[] modCount(int[] count) {
+        for (int i = 0; i < count.length; i++) {
+            count[i] = count[i] % 3;
+        }
+        return count;
+    }
+
+    private int restore(int[] count) {
+        int res = 0;
+        for (int i = 0; i < count.length; i++) {
+            res = res << 1;
+            res = res | count[i];
+        }
+        return res;
+    }
+}
+```
+注意一个基础操作： 给定32位的位表示，返回对应的整数。
+```Java
+private int restore(int[] count) {
+    int res = 0;
+    for (int i = 0; i < count.length; i++) {
+        res = res << 1;
+        res = res | count[i];
+    }
+    return res;
+}
+```
