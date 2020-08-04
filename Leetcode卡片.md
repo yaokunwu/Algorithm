@@ -1592,3 +1592,36 @@ class Solution {
 再来总结一下leetcode卡片上面的tail recursion和non tail recursion，与树的递归有什么相似性。
 tail recursion可以带返回值，相当于前序遍历的带返回值递归，前序操作的结果以参数形式传入下层递归中，并且只能有一个recursion call
 non tail recursion相当于后序遍历带返回值递归，由于事后处理结果，所以需要和底层回退来的结果进行合并（相当于分治）。
+
+
+[剑指 Offer 58 - I. 翻转单词顺序](https://leetcode-cn.com/problems/fan-zhuan-dan-ci-shun-xu-lcof/) <br>
+注意字符串的操作细节。
+
+[剑指 Offer 58 - II. 左旋转字符串](https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/) <br>
+旋转数组字符串通解: 区间交换
+```Java
+class Solution {
+    public String reverseLeftWords(String s, int n) {
+        n = n % s.length();
+        char[] charArray = s.toCharArray();
+        helper(charArray, 0, n - 1);
+        helper(charArray, n, charArray.length - 1);
+        helper(charArray, 0, charArray.length - 1);
+        return String.valueOf(charArray);
+    }
+
+    private void helper(char[] charArray, int start, int end) {
+        while (start < end) {
+            char tmp = charArray[start];
+            charArray[start] = charArray[end];
+            charArray[end] = tmp;
+            start++;
+            end--;
+        }
+    }
+}
+```
+PriorityQueue 可以直接remove一个元素.
+
+[剑指 Offer 62. 圆圈中最后剩下的数字](https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/) <br>
+并不会做。。
