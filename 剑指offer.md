@@ -492,3 +492,70 @@ class MaxQueue {
     }
 }
 ```
+
+[剑指 Offer 60. n个骰子的点数](https://leetcode-cn.com/problems/nge-tou-zi-de-dian-shu-lcof/) <br>
+6叉树preorder，超时， 想办法改成postorder， 这题比正常的动规多了一层复杂度，就是每个sum都要求一次count。
+```Java
+class Solution {
+    Map<Integer, Integer> map;
+    public double[] twoSum(int n) {
+        map = new TreeMap<>();
+        dfs(n, 0);
+        double[] res = new double[map.size()];
+        int i = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            res[i++] = entry.getValue() / Math.pow(6, n);
+        }
+        return res;
+    }
+
+    private void dfs(int level, int sum) {
+        if (level == 0) {
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+            return;
+        }
+
+        for (int i = 1; i < 7; i++) {
+            dfs(level - 1, sum + i);
+        }
+    }
+}
+```
+
+改preorder为postorder, f(level, sum)表示level个筛子晒出sum的个数
+```Java
+class Solution {
+    Integer[][] dp;
+    public double[] twoSum(int n) {
+        dp = new Integer[n + 1][6 * n + 1];
+        double[] res = new double[5 * n + 1];
+        //每一个sum都需要求一个count
+        int i = 0;
+        for (int sum = n; sum <= 6 * n; sum++) {
+            res[i] = dfs(n, sum) / Math.pow(6, n);
+            i++;
+        }
+        return res;
+    }
+
+    private int dfs(int level, int sum) {
+        if (level == 0) {
+            if (sum == 0) {
+                return 1;
+            }
+            return 0;
+        }
+        if (dp[level][sum] != null) {
+            return dp[level][sum];
+        }
+        int count = 0;
+        for (int i = 1; i < 7; i++) {
+            if (i <= sum) {
+                count += dfs(level - 1, sum - i);
+            }
+        }
+        dp[level][sum] = count;
+        return dp[level][sum];
+    }
+}
+```
