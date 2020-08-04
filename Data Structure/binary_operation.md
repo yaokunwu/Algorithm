@@ -1,6 +1,7 @@
 # Binary
 ## Common coperations of binary
 ### Basic operations <br>
+![image](https://github.com/yaokunwu/Algorithm/blob/master/Capture.PNG) <br>
 #### XOR operaton: 
 * a = 0 ^ a = a ^ 0 <br>
 * 0 = a ^ a;
