@@ -441,13 +441,54 @@ class Solution {
             deque.addLast(end);
             if (end >= k - 1) {
                 res[write++] = nums[deque.getFirst()];
-                if (start == deque.getFirst()) {
+                if (start == deque.getFirst()) {  // 这里最好用 nums[start] == nums[deque.getFirst()];与下一题的单调队列设计保持一致
                     deque.removeFirst();
                 }
                 start++;
             }
         }
         return res;
+    }
+}
+```
+
+[剑指 Offer 59 - II. 队列的最大值](https://leetcode-cn.com/problems/dui-lie-de-zui-da-zhi-lcof/) <br>
+1. 一定要注意pop的条件是单调队列头部值与正常队列头部值相等。
+2. Integer 元素也算地址，要用.equals才行
+3. 为什么pop的时候不能用两个queue的size相等？ 反例 ： 1 2 4 2 1 3.
+这题牛逼。
+```Java
+class MaxQueue {
+    Deque<Integer> maxDeque = new LinkedList<>();
+    Queue<Integer> queue = new LinkedList<>();
+    public MaxQueue() {
+        maxDeque = new LinkedList<>();
+        queue = new LinkedList<>();
+    }
+    
+    public int max_value() {
+        if (queue.isEmpty()) {
+            return -1;
+        }
+        return maxDeque.getFirst();
+    }
+    
+    public void push_back(int value) {
+        while (!maxDeque.isEmpty() && maxDeque.getLast() < value) {
+            maxDeque.removeLast();
+        }
+        maxDeque.addLast(value);
+        queue.offer(value);
+    }
+    
+    public int pop_front() {
+        if (queue.isEmpty()) {
+            return -1;
+        }
+        if (queue.peek().equals(maxDeque.getFirst()) {  //一定要注意这里
+            maxDeque.removeFirst();
+        }
+        return queue.poll();
     }
 }
 ```
