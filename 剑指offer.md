@@ -424,3 +424,30 @@ private int restore(int[] count) {
     return res;
 }
 ```
+
+[剑指 Offer 59 - I. 滑动窗口的最大值](https://leetcode-cn.com/problems/hua-dong-chuang-kou-de-zui-da-zhi-lcof/) <br>
+单调队列可还行
+```Java
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int start = 0, write = 0;
+        int[] res = new int[nums.length - k + 1];
+        Deque<Integer> deque = new LinkedList<>();
+        for (int end = 0; end < nums.length; end++) {
+            int currNum = nums[end];
+            while (!deque.isEmpty() && nums[deque.getLast()] < currNum) {
+                deque.removeLast();
+            }
+            deque.addLast(end);
+            if (end >= k - 1) {
+                res[write++] = nums[deque.getFirst()];
+                if (start == deque.getFirst()) {
+                    deque.removeFirst();
+                }
+                start++;
+            }
+        }
+        return res;
+    }
+}
+```
