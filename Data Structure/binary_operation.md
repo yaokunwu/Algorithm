@@ -2,6 +2,7 @@
 ## Common coperations of binary
 ### Basic operations <br>
 ![image](https://github.com/yaokunwu/Algorithm/blob/master/Capture.PNG) <br>
+![image](https://github.com/yaokunwu/Algorithm/blob/master/Capture2.PNG) <br>
 #### XOR operaton: 
 * a = 0 ^ a = a ^ 0 <br>
 * 0 = a ^ a;
