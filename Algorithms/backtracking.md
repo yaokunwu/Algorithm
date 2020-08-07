@@ -371,3 +371,34 @@ class Solution {
     }
 }
 ```
+这个是上个版本的精简版，i > level去重用的非常精髓
+```Java
+class Solution {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(candidates);
+        backtracking(candidates, res, new ArrayList<>(), target, 0);
+        return res;
+    }
+    
+    private void backtracking(int[] candidates, List<List<Integer>> res, List<Integer> solution, int target, int level) {
+        if (target == 0) {
+            res.add(new ArrayList<>(solution));
+            return;
+        }
+        
+        if (level == candidates.length) {
+            return;
+        }
+        
+        for (int i = level; i < candidates.length; i++) {
+            if (candidates[i] > target || (i > level && candidates[i] == candidates[i - 1])) { // i > level很强，非常强
+                continue;
+            }
+            solution.add(candidates[i]);
+            backtracking(candidates, res, solution, target - candidates[i], i + 1);
+            solution.remove(solution.size() - 1);
+        }
+    }
+}
+```
