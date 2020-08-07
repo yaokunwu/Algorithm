@@ -301,3 +301,73 @@ class Solution {
     }
 }
 ```
+
+[Combination Sum II](https://leetcode.com/problems/combination-sum-ii/) <br>
+和上一问一样的思路，又可以用两种方法解，太强了我
+```Java
+class Solution {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(candidates);
+        backtracking(candidates, res, new ArrayList<>(), target, 0);
+        return res;
+    }
+    
+    private void backtracking(int[] candidates, List<List<Integer>> res, List<Integer> solution, int target, int level) {
+        if (target == 0) {
+            res.add(new ArrayList<>(solution));
+            return;
+        }
+        
+        if (level == candidates.length) {
+            return;
+        }
+        
+        if (candidates[level] <= target) {
+            solution.add(candidates[level]);
+            backtracking(candidates, res, solution, target - candidates[level], level + 1);
+            solution.remove(solution.size() - 1);
+        }
+        while (level + 1 < candidates.length && candidates[level + 1] == candidates[level]) {
+            level++;
+        }
+        backtracking(candidates, res, solution, target, level + 1);
+    }
+}
+```
+
+```Java
+class Solution {
+    Set<Integer> set;
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        //backtracking
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(candidates);
+        set = new HashSet<>();
+        backtracking(candidates, res, new ArrayList<>(), target, 0);
+        return res;
+    }
+    
+    private void backtracking(int[] candidates, List<List<Integer>> res, List<Integer> solution, int target, int level) {
+        if (target == 0) {
+            res.add(new ArrayList<>(solution));
+            return;
+        }
+        
+        if (level == candidates.length) {
+            return;
+        }
+        
+        for (int i = level; i < candidates.length; i++) {
+            if (candidates[i] > target || (i > 0 && candidates[i] == candidates[i - 1] && !set.contains(candidates[i]))) {
+                continue;
+            }
+            solution.add(candidates[i]);
+            set.add(candidates[i]);
+            backtracking(candidates, res, solution, target - candidates[i], i + 1);
+            solution.remove(solution.size() - 1);
+            set.remove(candidates[i]);
+        }
+    }
+}
+```
