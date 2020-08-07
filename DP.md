@@ -245,3 +245,7 @@ class ExpressNumber {
 
 [Minimum jumps to reach the end](https://www.educative.io/courses/grokking-dynamic-programming-patterns-for-coding-interviews/7nAKN0Qz67r) <br>
 思路： 在每一层都会有相应的可以选择的状态，只需要对每个状态process
+
+
+[Combination Sum](https://leetcode.com/problems/combination-sum/) <br>
+这个题我就借用了unbounded 背包中的思路，没有用for循环，而是一种不选回头路的回溯
