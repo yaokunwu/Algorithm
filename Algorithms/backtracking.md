@@ -242,3 +242,62 @@ class Solution {
 TO-DO： 查看 [回溯与不需要回溯的对比](https://leetcode-cn.com/problems/permutations/solution/hui-su-suan-fa-python-dai-ma-java-dai-ma-by-liweiw/) <br>
 
 
+[Combination Sum](https://leetcode.com/problems/combination-sum/) <br>
+这个题我就借用了unbounded 背包中的思路，没有用for循环，而是一种不选回头路的回溯, 以下两种写法做对比
+```Java
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        backtracking(candidates, res, new ArrayList<>(), target, 0);
+        return res;
+    }
+    
+    private void backtracking(int[] candidates, List<List<Integer>> res, List<Integer> solution, int target, int level) {
+        if (target == 0) {
+            res.add(new ArrayList<>(solution));
+            return;
+        }
+        
+        if (level == candidates.length) {
+            return;
+        }
+        
+        if (candidates[level] <= target) {
+            solution.add(candidates[level]);
+            backtracking(candidates, res, solution, target - candidates[level], level);
+            solution.remove(solution.size() - 1);
+        }
+        
+        backtracking(candidates, res, solution, target, level + 1);
+    }
+}
+```
+```Java
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        //backtracking
+        List<List<Integer>> res = new ArrayList<>();
+        backtracking(candidates, res, new ArrayList<>(), target, 0);
+        return res;
+    }
+    
+    private void backtracking(int[] candidates, List<List<Integer>> res, List<Integer> solution, int target, int level) {
+        if (target == 0) {
+            res.add(new ArrayList<>(solution));
+            return;
+        }
+        
+        if (level == candidates.length) {
+            return;
+        }
+        
+        for (int i = level; i < candidates.length; i++) {
+            if (candidates[i] <= target) {
+                solution.add(candidates[i]);
+                backtracking(candidates, res, solution, target - candidates[i], i);
+                solution.remove(solution.size() - 1);
+            }
+        }
+    }
+}
+```
