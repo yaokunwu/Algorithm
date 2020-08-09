@@ -63,6 +63,7 @@ class Solution {
 正确思路: 原问题为建立1到n的BST，子问题为建立更小的BST 比如 2 到 n-1， n - 5 到 n 等等， 所以需要引入的迭代参数为start 和 end. <br>
 (这道题需要对递归理解很深, 可以暂时停一下)；<br>
 在理解一下： 重复性子问题： 选中1 - n 中任意数字， 0 - 任意数字 和 任意数字到n的二叉树数量的乘积。<br>
+```
 class Solution {
     List<TreeNode> res;
     public List<TreeNode> generateTrees(int n) {
@@ -95,6 +96,36 @@ class Solution {
 }
 ```
 **注意，currList.add(null)是必要的因为for 循环 list如果为kong不会执行for循环中内容。 (null也算list中的元素）<br>
+
+
+[Unique Binary Search Trees](https://leetcode.com/problems/unique-binary-search-trees/) <br>
+这两道题都很有意思，都是分治。
+```Java
+class Solution {
+    Integer[][] dp;
+    public int numTrees(int n) {
+        dp = new Integer[n + 1][n + 1];
+        return dfs(1, n);
+    }
+    
+    private int dfs(int start, int end) {
+        if (start >= end) {
+            return 1;
+        }
+        if (dp[start][end] != null) {
+            return dp[start][end];
+        }
+        int count = 0;
+        for (int i = start; i <= end; i++) {
+            int left = dfs(start, i - 1);
+            int right = dfs(i + 1, end);
+            count += left * right;
+        }
+        dp[start][end] = count;
+        return dp[start][end];
+    }
+}
+```
 
 [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) <br>
 思路： 动规的单参数<br>
