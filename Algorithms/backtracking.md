@@ -405,6 +405,9 @@ class Solution {
 
 [Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses/) <br>
 这是道多参数的回溯，每一层的可选择的东西不同， 并且有层数和长度的双重限制。
+第一次拿到题知道用回溯，但是没想到解法。
+结论： 回溯一定要画递归树，明确什么参数代表层数，每一层有什么选择，每一层的选择是否与其他参数相关并引入相关参数。
+比如这道题，每一层的选择与idx所处string的位置有关，所以除了4层的限制以外，还需引入idx作为辅助参数明确可选择对象。
 ```Java
 class Solution {   
     List<String> res;
