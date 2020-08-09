@@ -402,3 +402,48 @@ class Solution {
     }
 }
 ```
+
+[Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses/) <br>
+这是道多参数的回溯，每一层的可选择的东西不同， 并且有层数和长度的双重限制。
+```Java
+class Solution {   
+    List<String> res;
+    public List<String> restoreIpAddresses(String s) {
+        res = new ArrayList<>();
+        dfs(s, 0, 0, new StringBuilder());
+        return res;
+    }
+    
+    private void dfs(String s, int segId, int segStart, StringBuilder curr) {
+        if (segId == 4 || segStart == s.length()) {
+            if (segId == 4 && segStart == s.length()) {
+                curr.deleteCharAt(curr.length() - 1);
+                res.add(curr.toString());
+                curr.append('.');
+            }
+            return;
+        }
+        
+        if (s.charAt(segStart)  == '0') {
+            curr.append('0');
+            curr.append('.');
+            dfs(s, segId + 1, segStart + 1, curr);
+            curr.setLength(curr.length() - 2);
+        } else {
+            int seg = 0;
+            for (int i = 0; i < 3; i++) {
+                int idx = segStart + i;
+                if (idx < s.length()) {
+                    seg = seg * 10 + (s.charAt(idx) - '0');
+                    if (seg <= 255) {
+                        curr.append(seg);
+                        curr.append('.');
+                        dfs(s, segId + 1, idx + 1, curr);
+                        curr.setLength(curr.length() - (i + 2));
+                    }
+                }
+            }
+        }
+    }
+}
+```
