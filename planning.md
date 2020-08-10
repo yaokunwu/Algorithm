@@ -23,3 +23,7 @@ mock interview + 投简历 + 做做hard
 拿到面试 开始刷tag和面经
 
 **progress 力扣200题斩， 达成时间 7月28号**
+
+## 计划变更
+8月10日开始，还有65道medium，25道easy, 46道hard （截止第一次weekly contest）
+9月初
