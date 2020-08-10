@@ -20,7 +20,9 @@
 ## 计划
 #### 8月10日 <br>
 早： 新题 (111, 109， 113, 114)    （easy 余24， medium 余62, 打卡完毕） <br>
-'TODO: Flatten Tree to LinkedList 专题训练'<br>
+'''Java
+//TODO: Flatten Tree to LinkedList 专题训练
+'''
 午： 旧题 (1, 2, 3, 5, 6, 7, 8, 9, 11, 12) <br>
 晚： Java中级 : 异常处理，I/O， 集合框架，泛型，JDBC <br>
 
