@@ -374,7 +374,53 @@ public int minCostII(int[][] costs) {
 }
 ```
 * [Example 2: House Robber](https://www.lintcode.com/problem/house-robber/description)<br>
+//1. State: dp[i] represent the maximum being stole by the first i houses<br>
+//2. State transfer: dp[i] = max(dp[i - 1], dp[i - 2] + A[i - 1])<br>
+//3. dp[0] = 0; dp[1] = A[i - 1];<br>
+```Java
+public long houseRobber(int[] A) {
+    if (A == null || A.length == 0) {
+        return 0;
+    }
+    long[] dp = new long[A.length + 1];
+    dp[0] = 0;
+    dp[1] = A[0];
+    for (int i = 2; i <= A.length; i++) {
+        dp[i] = Math.max(dp[i - 1], dp[i - 2] + A[i - 1]);    
+    }
+    return dp[A.length];
+}
+```
 
+* [Example 3: House Robber II](https://www.lintcode.com/problem/house-robber-ii/description)<br>
+//1. State: dp[i] represent the maximum being stole by the first i houses<br>
+//2. State transfer: dp[i] = max(dp[i - 1], dp[i - 2] + A[i - 1])<br>
+//3. dp[0] = 0; dp[1] = A[i - 1];<br>
+//4. convert to 0 to N - 2 and 1 to N - 1<br>
+```Java
+public int houseRobber2(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return 0;
+    }
+    if (nums.length == 1) {
+        return nums[0];
+    }
+    return Math.max(helper(Arrays.copyOfRange(nums, 0, nums.length - 1)), helper(Arrays.copyOfRange(nums, 1, nums.length)));
+}
+
+private int helper(int[] A) {
+    if (A == null || A.length == 0) {
+        return 0;
+    }
+    int[] dp = new int[A.length + 1];
+    dp[0] = 0;
+    dp[1] = A[0];
+    for (int i = 2; i <= A.length; i++) {
+        dp[i] = Math.max(dp[i - 1], dp[i - 2] + A[i - 1]);    
+    }
+    return dp[A.length];
+}
+```
 
 
 
