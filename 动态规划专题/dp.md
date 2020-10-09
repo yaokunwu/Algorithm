@@ -12,6 +12,8 @@
 
 ### 动态规划组成部分四： 计算顺序 （从小到大）
 
+#### DP course#1
+
 * [Example 1: Coin Change](https://www.lintcode.com/problem/coin-change/description)<br>
 //1. State: dp[x] represent the minimum number of coins to fill the amount <br>
 //2. State transfer: dp[x] = min{dp[x - k] | for all k} + 1<br>
@@ -67,5 +69,45 @@ public boolean canJump(int[] A) {
         }
     }
     return dp[A.length - 1];
+}
+```
+
+#### DP course#2
+坐标型动态规划
+
+* [Example 1: Unique Path II](https://www.lintcode.com/problem/unique-paths-ii/description)<br>
+//1. State: dp[i][j] represent how many way from source to grid[i][j] <br>
+//2. State transfer: dp[i][j] = dp[i - 1][j] + dp[i][j - 1] if obstacleGrid[i][j] != 1 <br>
+                   : dp[i][j] = 0 if obstacleGrid[i][j] == 1 <br>
+//3. dp[0][0] = 1, dp[row][0] = 1, dp[0][col] = 1 <br>
+```Java
+public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+    if (obstacleGrid == null || obstacleGrid.length == 0 || obstacleGrid[0].length == 0
+        || obstacleGrid[0][0] == 1) {
+        return 0;
+    }
+    
+    int rows = obstacleGrid.length;
+    int cols = obstacleGrid[0].length;
+    int[][] dp = new int[rows][cols];
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (obstacleGrid[i][j] == 1) {
+                dp[i][j] = 0;
+            } else {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = 1;
+                } else {
+                    if (i - 1 >= 0) {
+                        dp[i][j] += dp[i - 1][j];
+                    }
+                    if (j - 1 >= 0) {
+                        dp[i][j] += dp[i][j - 1];
+                    }
+                }
+            }
+        }
+    }
+    return dp[rows - 1][cols - 1];
 }
 ```
