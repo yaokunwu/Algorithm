@@ -53,9 +53,9 @@ public int uniquePaths(int m, int n) {
 ```
 
 * [Example 3: Jump Game](https://www.lintcode.com/problem/jump-game/description)<br>
-//1. State: dp[i] represent whether #i can be jumped to.
-//2. State transfer: dp[i] = true if Exist j, where j < i that arr[j] + j >= i
-//3. dp[0] = true
+//1. State: dp[i] represent whether #i can be jumped to.<br>
+//2. State transfer: dp[i] = true if Exist j, where j < i that arr[j] + j >= i<br>
+//3. dp[0] = true<br>
 ```Java
 public boolean canJump(int[] A) {
     boolean[] dp = new boolean[A.length];
