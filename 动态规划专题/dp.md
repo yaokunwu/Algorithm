@@ -73,7 +73,7 @@ public boolean canJump(int[] A) {
 ```
 
 #### DP course#2
-坐标型动态规划
+坐标型动态规划(例题）
 * [Example 1: Unique Path II](https://www.lintcode.com/problem/unique-paths-ii/description)<br>
 //1. State: dp[i][j] represent how many way from source to grid[i][j] <br>
 //2. State transfer: dp[i][j] = dp[i - 1][j] + dp[i][j - 1] if obstacleGrid[i][j] != 1 <br>
@@ -111,12 +111,12 @@ public int uniquePathsWithObstacles(int[][] obstacleGrid) {
 }
 ```
 
-序列型动态规划
+序列型动态规划(例题）
 * [Example 2: Paint House](https://www.lintcode.com/problem/paint-house/description)<br>
-//1. State: dp[i][j] represent the minimum cost of pre i houses with color j
-//2. State transfer: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);
-//: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);
-//3. dp[0][0] = dp[0][1] = dp[0][2] = 0;
+//1. State: dp[i][j] represent the minimum cost of pre i houses with color j<br>
+//2. State transfer: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);<br>
+//: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);<br>
+//3. dp[0][0] = dp[0][1] = dp[0][2] = 0;<br>
 ```Java
 public int minCost(int[][] costs) {
     if (costs == null) {
@@ -141,3 +141,34 @@ public int minCost(int[][] costs) {
     return Math.min(Math.min(dp[nHouses][0],dp[nHouses][1]), dp[nHouses][2]);
 }
 ```
+
+划分型动态规划(例题）
+* [Example 3: Decode Ways](https://www.lintcode.com/problem/decode-ways/description)<br>
+//1. State: dp[i] represent how many way to decode the string from previous i<br>
+//2. State transfer: dp[i] = dp[i - 1] | string[i - 1] is a valid number + dp[i - 2] | string[i - 1 to i - 2] is a valid number<br>
+//3. dp[0] = 1<br>
+```Java
+public int numDecodings(String s) {
+    if (s == null || s.length() == 0) {
+        return 0;
+    }
+    char[] nums = s.toCharArray();
+    int[] dp = new int[nums.length + 1];
+    dp[0] = 1;
+    for (int i = 1; i <= nums.length; i++) {
+        dp[i] = 0;
+        if (nums[i - 1] > '0') {
+            dp[i] += dp[i - 1];
+        }
+        if (i > 1) {
+            int twoDigit = (nums[i - 2] - '0') * 10 + (nums[i - 1] - '0');
+            if (twoDigit >= 10 && twoDigit <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+    }
+    return dp[nums.length];
+}
+```
+
+坐标型动态规划(系统讲解）
