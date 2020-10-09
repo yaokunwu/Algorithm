@@ -78,7 +78,7 @@ public boolean canJump(int[] A) {
 * [Example 1: Unique Path II](https://www.lintcode.com/problem/unique-paths-ii/description)<br>
 //1. State: dp[i][j] represent how many way from source to grid[i][j] <br>
 //2. State transfer: dp[i][j] = dp[i - 1][j] + dp[i][j - 1] if obstacleGrid[i][j] != 1 <br>
-                   : dp[i][j] = 0 if obstacleGrid[i][j] == 1 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: dp[i][j] = 0 if obstacleGrid[i][j] == 1 <br>
 //3. dp[0][0] = 1, dp[row][0] = 1, dp[0][col] = 1 <br>
 ```Java
 public int uniquePathsWithObstacles(int[][] obstacleGrid) {
