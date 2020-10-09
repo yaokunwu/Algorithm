@@ -236,9 +236,9 @@ public int minPathSum(int[][] grid) {
 }
 ```
 * [Example 6: Bomb Enemy](https://www.lintcode.com/problem/bomb-enemy/description)<br>
-//1. State: dp[i][j] represent the maximum number of enemy being bombed at grid[i][j] in direction k.
-//2. State transfer: dp[i][j] = dp[i ? 1][j ? 1] + (1)
-//3. first row, first col; first row, last col; last row, first col; last row, last col;
+//1. State: dp[i][j] represent the maximum number of enemy being bombed at grid[i][j] in direction k.<br>
+//2. State transfer: dp[i][j] = dp[i ? 1][j ? 1] + (1)<br>
+//3. first row, first col; first row, last col; last row, first col; last row, last col;<br>
 ```Java
 public int maxKilledEnemies(char[][] grid) {
     if (grid == null || grid.length == 0 || grid[0].length == 0) {
@@ -315,9 +315,9 @@ public int maxKilledEnemies(char[][] grid) {
 
 * 附带例题 （位运算型动态规划）
 * [Example 7: Counting Bits](https://www.lintcode.com/problem/counting-bits/description)<br>
-// State: dp[i] represent the number of 1 in the bit representation of num i
-// State transfer: dp[i] = dp[i>>1] + i mod 2;
-// dp[0] = 0
+// State: dp[i] represent the number of 1 in the bit representation of num i<br>
+// State transfer: dp[i] = dp[i>>1] + i mod 2;<br>
+// dp[0] = 0<br>
 ```Java
 public int[] countBits(int num) {
     int[] dp = new int[num + 1];
@@ -327,3 +327,63 @@ public int[] countBits(int num) {
     return dp;
 }
 ```
+#### DP course#3
+### 序列型动态规划(系统讲解）
+* f[i] 中的下标i表示以前i个元素a[0], a[1], ..., a[n - 1]的性质
+* [Example 1: Paint House II](https://www.lintcode.com/problem/paint-house-ii/description)<br>
+//1. dp[i][k] represent the minimum cost to paint the first i house with houst[i - 1] painted as color k.<br>
+//2. dp[i][k] = min(dp[i - 1][j not k]) + costs[i - 1][k];<br>
+//3. dp[0][k] = 0;<br>
+```Java
+public int minCostII(int[][] costs) {
+    if (costs == null || costs.length == 0 || costs[0].length == 0) {
+        return 0;
+    }
+    int[][] dp = new int[costs.length + 1][costs[0].length];
+    //注意求最小值和次小值需要把下标和值分开
+    int j1, j2;
+    for (int i = 1; i <= costs.length; i++) {
+        int min1 = Integer.MAX_VALUE;
+        int min2 = Integer.MAX_VALUE;
+        j1 = j2 = -1;
+        for (int k = 0; k < costs[0].length; k++) {
+            if (dp[i - 1][k] < min1) {
+                min2 = min1;
+                j2 = j1;
+                min1 = dp[i - 1][k];
+                j1 = k;
+            } else if (dp[i - 1][k] < min2) {
+                min2 = dp[i - 1][k];
+                j2 = k;
+            }
+        }
+        for (int k = 0; k < costs[0].length; k++) {
+            if (k != j1) {
+                dp[i][k] = min1;
+            } else {
+                dp[i][k] = min2;
+            }
+            dp[i][k] += costs[i - 1][k];
+        }
+    }
+    int res = Integer.MAX_VALUE;
+    for (int k = 0; k < costs[0].length; k++) {
+        res = Math.min(res, dp[costs.length][k]);
+    }
+    return res;
+}
+```
+* [Example 2: House Robber](https://www.lintcode.com/problem/house-robber/description)<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
