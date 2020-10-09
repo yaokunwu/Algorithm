@@ -74,7 +74,6 @@ public boolean canJump(int[] A) {
 
 #### DP course#2
 坐标型动态规划
-
 * [Example 1: Unique Path II](https://www.lintcode.com/problem/unique-paths-ii/description)<br>
 //1. State: dp[i][j] represent how many way from source to grid[i][j] <br>
 //2. State transfer: dp[i][j] = dp[i - 1][j] + dp[i][j - 1] if obstacleGrid[i][j] != 1 <br>
@@ -109,5 +108,36 @@ public int uniquePathsWithObstacles(int[][] obstacleGrid) {
         }
     }
     return dp[rows - 1][cols - 1];
+}
+```
+
+序列型动态规划
+* [Example 2: Paint House](https://www.lintcode.com/problem/paint-house/description)<br>
+//1. State: dp[i][j] represent the minimum cost of pre i houses with color j
+//2. State transfer: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);
+//: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);
+//3. dp[0][0] = dp[0][1] = dp[0][2] = 0;
+```Java
+public int minCost(int[][] costs) {
+    if (costs == null) {
+        return 0;
+    }
+    int nHouses = costs.length;
+    int[][] dp = new int[nHouses + 1][3];
+    dp[0][0] = 0;
+    dp[0][1] = 0;
+    dp[0][2] = 0;
+    for (int i = 1; i <= nHouses; i++) {
+        for (int j = 0; j < 3; j++) {
+            dp[i][j] = Integer.MAX_VALUE;
+            for (int k = 0; k < 3; k++) {
+                if (j == k) {
+                    continue;
+                }
+                dp[i][j] = Math.min(dp[i][j], dp[i - 1][k] + costs[i - 1][j]);
+            }
+        }
+    }
+    return Math.min(Math.min(dp[nHouses][0],dp[nHouses][1]), dp[nHouses][2]);
 }
 ```
