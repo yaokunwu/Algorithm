@@ -172,7 +172,7 @@ public int numDecodings(String s) {
 ```
 
 ### 坐标型动态规划(系统讲解）
-* f[i] 中的下标i表示以ai为结尾的满足条件的子序列的性质 
+* f[i] 中的下标i表示以ai为结尾的满足条件的子序列的性质 (注意坐标型动规的最后一步指的是以ai为结尾的最后一步） 
 * [Example 4: Longest increasing continuous subsequence](https://www.lintcode.com/problem/longest-continuous-increasing-subsequence/description)<br>
 //1. State: dp[i] represent the longest length that ends with i.<br>
 //2. State transfer: dp[i] = max(1, dp[i - 1] + 1 if i >= 1 && arr[i - 1] < arr[i])<br>
@@ -233,5 +233,97 @@ public int minPathSum(int[][] grid) {
         }
     }
     return dp[m - 1][n - 1];
+}
+```
+* [Example 6: Bomb Enemy](https://www.lintcode.com/problem/bomb-enemy/description)<br>
+//1. State: dp[i][j] represent the maximum number of enemy being bombed at grid[i][j] in direction k.
+//2. State transfer: dp[i][j] = dp[i ? 1][j ? 1] + (1)
+//3. first row, first col; first row, last col; last row, first col; last row, last col;
+```Java
+public int maxKilledEnemies(char[][] grid) {
+    if (grid == null || grid.length == 0 || grid[0].length == 0) {
+        return 0;
+    }
+    int m = grid.length;
+    int n = grid[0].length;
+    int[][] dp = new int[m][n];
+    int[][] res = new int[m][n];
+    // k = 0;
+    for (int j = n - 1; j >= 0; j--) {
+        for (int i = 0; i < m; i++) {
+            dp[i][j] = 0;
+            if (grid[i][j] == 'E') {
+                dp[i][j] = 1;
+            } 
+            if (grid[i][j] != 'W' && j + 1 < n) {
+                dp[i][j] += dp[i][j + 1];
+            }
+            res[i][j] += dp[i][j];
+        }
+    }
+    //k = 1
+    for (int i = m - 1; i >= 0; i--) {
+        for (int j = 0; j < n; j++) {
+            dp[i][j] = 0;
+            if (grid[i][j] == 'E') {
+                dp[i][j] = 1;
+            } 
+            if (grid[i][j] != 'W' && i + 1 < m) {
+                dp[i][j] += dp[i + 1][j];
+            }
+            res[i][j] += dp[i][j];
+        }
+    }
+    //k = 2
+    for (int j = 0; j < n; j++) {
+        for (int i = 0; i < m; i++) {
+            dp[i][j] = 0;
+            if (grid[i][j] == 'E') {
+                dp[i][j] = 1;
+            } 
+            if (grid[i][j] != 'W' && j - 1 >= 0) {
+                dp[i][j] += dp[i][j - 1];
+            }
+            res[i][j] += dp[i][j];
+        }
+    }
+
+    //k = 3
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            dp[i][j] = 0;
+            if (grid[i][j] == 'E') {
+                dp[i][j] = 1;
+            } 
+            if (grid[i][j] != 'W' && i - 1 >= 0) {
+                dp[i][j] += dp[i - 1][j];
+            }
+            res[i][j] += dp[i][j];
+        }
+    }
+    int result = 0;
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (grid[i][j] == '0') {
+                result = Math.max(result, res[i][j]);
+            }
+        }
+    }
+    return result;
+}
+```
+
+* 附带例题 （位运算型动态规划）
+* [Example 7: Counting Bits](https://www.lintcode.com/problem/counting-bits/description)<br>
+// State: dp[i] represent the number of 1 in the bit representation of num i
+// State transfer: dp[i] = dp[i>>1] + i mod 2;
+// dp[0] = 0
+```Java
+public int[] countBits(int num) {
+    int[] dp = new int[num + 1];
+    for (int i = 0; i <= num; i++) {
+        dp[i] = dp[i >>> 1] + i % 2;
+    }
+    return dp;
 }
 ```
