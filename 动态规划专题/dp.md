@@ -115,7 +115,7 @@ public int uniquePathsWithObstacles(int[][] obstacleGrid) {
 * [Example 2: Paint House](https://www.lintcode.com/problem/paint-house/description)<br>
 //1. State: dp[i][j] represent the minimum cost of pre i houses with color j<br>
 //2. State transfer: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);<br>
-//: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);<br>
+: dp[i][0] = min(dp[i - 1][1] + cost[i - 1][0], dp[i - 1][2] + cost[i - 1][0]);<br>
 //3. dp[0][0] = dp[0][1] = dp[0][2] = 0;<br>
 ```Java
 public int minCost(int[][] costs) {
@@ -174,9 +174,9 @@ public int numDecodings(String s) {
 ### 坐标型动态规划(系统讲解）
 * f[i] 中的下标i表示以ai为结尾的满足条件的子序列的性质 
 * [Example 4: Longest increasing continuous subsequence](https://www.lintcode.com/problem/longest-continuous-increasing-subsequence/description)<br>
-//1. State: dp[i] represent the longest length that ends with i.
-//2. State transfer: dp[i] = max(1, dp[i - 1] + 1 if i >= 1 && arr[i - 1] < arr[i])
-//3. dp[0] = 1
+//1. State: dp[i] represent the longest length that ends with i.<br>
+//2. State transfer: dp[i] = max(1, dp[i - 1] + 1 if i >= 1 && arr[i - 1] < arr[i])<br>
+//3. dp[0] = 1<br>
 ```Java
 public int longestIncreasingContinuousSubsequence(int[] A) {
     int[] A2 = new int[A.length];
@@ -205,9 +205,9 @@ private int helper(int[] A) {
 ```
 
 * [Example 5: Minumum Path Sum](https://www.lintcode.com/problem/minimum-path-sum/description)<br>
-//1. State: dp[i][j] represent the minimum path sum ends at matrix[i][j]
-//2. State transfer: dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + matrix[i][j]
-//3. dp[0][0] = matrix[0][0], first row and first col
+//1. State: dp[i][j] represent the minimum path sum ends at matrix[i][j]<br>
+//2. State transfer: dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + matrix[i][j]<br>
+//3. dp[0][0] = matrix[0][0], first row and first col<br>
 ```Java
 public int minPathSum(int[][] grid) {
     if (grid == null || grid.length == 0 || grid[0].length == 0) {
