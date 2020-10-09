@@ -171,4 +171,67 @@ public int numDecodings(String s) {
 }
 ```
 
-坐标型动态规划(系统讲解）
+### 坐标型动态规划(系统讲解）
+* f[i] 中的下标i表示以ai为结尾的满足条件的子序列的性质 
+* [Example 4: Longest increasing continuous subsequence](https://www.lintcode.com/problem/longest-continuous-increasing-subsequence/description)<br>
+//1. State: dp[i] represent the longest length that ends with i.
+//2. State transfer: dp[i] = max(1, dp[i - 1] + 1 if i >= 1 && arr[i - 1] < arr[i])
+//3. dp[0] = 1
+```Java
+public int longestIncreasingContinuousSubsequence(int[] A) {
+    int[] A2 = new int[A.length];
+    for (int i = 0; i < A.length; i++) {
+        A2[i] = A[A.length - i - 1];
+    }
+    int res = Math.max(helper(A),helper(A2));
+    return res;
+}
+
+private int helper(int[] A) {
+    if (A == null || A.length == 0) {
+        return 0;
+    }
+    int res = 0;
+    int[] dp = new int[A.length];
+    for (int i = 0; i < A.length; i++) {
+        dp[i] = 1;
+        if (i > 0 && A[i - 1] < A[i]) {
+            dp[i] = dp[i - 1] + 1;
+        }
+        res = Math.max(res, dp[i]);
+    }
+    return res;
+}
+```
+
+* [Example 5: Minumum Path Sum](https://www.lintcode.com/problem/minimum-path-sum/description)<br>
+//1. State: dp[i][j] represent the minimum path sum ends at matrix[i][j]
+//2. State transfer: dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + matrix[i][j]
+//3. dp[0][0] = matrix[0][0], first row and first col
+```Java
+public int minPathSum(int[][] grid) {
+    if (grid == null || grid.length == 0 || grid[0].length == 0) {
+        return 0;
+    }
+    int m = grid.length;
+    int n = grid[0].length;
+    int[][] dp = new int[m][n];
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == 0 && j == 0) {
+                dp[0][0] = grid[0][0];
+                continue;
+            }
+            int t = Integer.MAX_VALUE;
+            if (i - 1 >= 0) {
+                t = Math.min(t, dp[i - 1][j]);
+            }
+            if (j - 1 >= 0) {
+                t = Math.min(t, dp[i][j - 1]);
+            }
+            dp[i][j] = t + grid[i][j];
+        }
+    }
+    return dp[m - 1][n - 1];
+}
+```
