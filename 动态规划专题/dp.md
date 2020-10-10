@@ -448,6 +448,7 @@ public int maxProfit(int[] prices) {
 if j is even (not holding stock), dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2];<br>
 if j is odd (holding stock), dp[i][j] = max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i - 1][j - 1]<br>
 // dp[0][0] = 0; dp[0][1] = dp[0][2] = dp[0][3] = dp[0][4] = Integer.MIN_VALUE because these values are unavailable to use<br>
+***注意: 并不是买入扣钱卖出得钱，而是直接考虑的利润***
 ```Java
 public static int maxProfit(int[] prices) {
     if (prices == null || prices.length == 0) {
@@ -482,6 +483,7 @@ public static int maxProfit(int[] prices) {
 if j is even (not holding stock), dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2];<br>
 if j is odd (holding stock), dp[i][j] = max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i - 1][j - 1]<br>
 // dp[0][0] = 0; dp[0][1] = dp[0][2] = ... = dp[0][2 * k] = Integer.MIN_VALUE because these values are unavailable to use<br>
+***注意: 并不是买入扣钱卖出得钱，而是直接考虑的利润***
 ```Java
 public int maxProfit(int K, int[] prices) {
     if (prices == null || prices.length == 0) {
