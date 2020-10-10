@@ -421,8 +421,28 @@ private int helper(int[] A) {
     return dp[A.length];
 }
 ```
-
-
+* [Example 4: Best Time to Buy and Sell Stock II](https://www.lintcode.com/problem/best-time-to-buy-and-sell-stock-ii/description)<br>
+//1. State dp[i] represent the max profit by the first i days (前i天)
+//2. State tranfer: dp[i] = dp[i - 1] if prices[i - 1] < prices[i - 2], dp[i] = dp[i - 1] + prices[i - 1] - prices[i - 2] if prices[i - 1] > prices[i - 2].
+//3. dp[0] = 0, dp[1] = 0
+```Java
+public int maxProfit(int[] prices) {
+    if (prices == null || prices.length == 0) {
+        return 0;
+    }
+    int[] dp = new int[prices.length + 1];
+    dp[0] = 0;
+    dp[1] = 0;
+    for (int i = 2; i <= prices.length; i++) {
+        dp[i] = dp[i - 1];
+        if (prices[i - 1] > prices[i - 2]) {
+            dp[i] += prices[i - 1] - prices[i - 2];
+        } 
+    }
+    return dp[prices.length];
+}
+```
+* [Example 5: Best Time to Buy and Sell Stock III](https://www.lintcode.com/problem/best-time-to-buy-and-sell-stock-iii/description)<br>
 
 
 
