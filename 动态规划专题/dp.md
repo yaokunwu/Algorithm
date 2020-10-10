@@ -446,7 +446,7 @@ public int maxProfit(int[] prices) {
 // State: dp[i][j] represent the maximum profit by previous i days and state at j in day[i - 1], states from 0, 1, 2, 3, 4<br>
 // State transfer: <br>
 if j is even (not holding stock), dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2];<br>
-if j is odd (holding stock), dp[i][j] = max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i - 1][j - 1], dp[i - 1][j - 2] + prices[i - 1] - prices[i - 2];<br>
+if j is odd (holding stock), dp[i][j] = max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i - 1][j - 1]<br>
 // dp[0][0] = 0; dp[0][1] = dp[0][2] = dp[0][3] = dp[0][4] = Integer.MIN_VALUE because these values are unavailable to use<br>
 ```Java
 public static int maxProfit(int[] prices) {
@@ -480,7 +480,7 @@ public static int maxProfit(int[] prices) {
 // State: dp[i][j] represent the maximum profit by previous i days and state at j in day[i - 1], states from 0, 1, 2, 3, 4 ... 2 * k + 1.<br>
 // State transfer: <br>
 if j is even (not holding stock), dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2];<br>
-if j is odd (holding stock), dp[i][j] = max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i - 1][j - 1], dp[i - 1][j - 2] + prices[i - 1] - prices[i - 2];<br>
+if j is odd (holding stock), dp[i][j] = max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i - 1][j - 1]<br>
 // dp[0][0] = 0; dp[0][1] = dp[0][2] = ... = dp[0][2 * k] = Integer.MIN_VALUE because these values are unavailable to use<br>
 ```Java
 public int maxProfit(int K, int[] prices) {
