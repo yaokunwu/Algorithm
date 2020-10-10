@@ -329,6 +329,7 @@ public int[] countBits(int num) {
 ```
 #### DP course#3
 ### 序列型动态规划(系统讲解）
+#### 序列 + 状态动态规划
 * f[i] 中的下标i表示以前i个元素a[0], a[1], ..., a[n - 1]的性质
 * [Example 1: Paint House II](https://www.lintcode.com/problem/paint-house-ii/description)<br>
 //1. dp[i][k] represent the minimum cost to paint the first i house with houst[i - 1] painted as color k.<br>
@@ -528,10 +529,64 @@ public int maxProfit(int K, int[] prices) {
     return res;
 }
 ```
+#### 最长序列型动态规划
+* [Example 7: Longest Increasing Subsequence](https://www.lintcode.com/problem/longest-increasing-subsequence/description)<br>
+这是个坐标型 (nlogn算法看第七讲) <br>
+//State: dp[i] represent the longest len at the end of num i.
+//State transfer: dp[i] = 1 or max(dp[j] + 1) | j < i and a[j] < a[i] 
+// none
+```Java
+public int longestIncreasingSubsequence(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return 0;
+    }
+    int n = nums.length;
+    int[] dp = new int[n];
+    int res = 0;
+    for (int i= 0; i < n; i++) {
+        dp[i] = 1;
+        for (int j = 0; j < i; j++) {
+            if (nums[j] < nums[i]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);    
+            }
+        }
+       res = Math.max(res, dp[i]);
+    }
+    return res;
+}
+```
 
-
-
-
+* [Example 8: Russian Doll Envelopes](https://www.lintcode.com/problem/russian-doll-envelopes/description)<br>
+这是个坐标型 (**TODO**:nlogn算法看完第七讲后自己写)
+//State: dp[i] represent the maximum number of envelopes at envelop i
+//State transfer: dp[i] = 1 or max(dp[j] + 1) | j < i and width[j] < width[i])
+//None, need to sort first
+```Java
+public int maxEnvelopes(int[][] envelopes) {
+    if (envelopes == null || envelopes.length == 0 || envelopes[0].length == 0) {
+        return 0;
+    }
+    Comparator<int[]> c = new Comparator<int[]>() {
+        public int compare(int[] a, int[] b) {
+            return a[0] - b[0];
+        }
+    };
+    Arrays.sort(envelopes, c);
+    int n = envelopes.length;
+    int[] dp = new int[n];
+    int res = 0;
+    for (int i = 0; i < n; i++) {
+        dp[i] = 1;
+        for (int j = 0; j < i; j++) {
+            if (envelopes[j][0] < envelopes[i][0] && envelopes[j][1] < envelopes[i][1]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+        res = Math.max(res, dp[i]);
+    }
+    return res;
+}
+```
 
 
 
