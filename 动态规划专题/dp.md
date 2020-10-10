@@ -422,9 +422,9 @@ private int helper(int[] A) {
 }
 ```
 * [Example 4: Best Time to Buy and Sell Stock II](https://www.lintcode.com/problem/best-time-to-buy-and-sell-stock-ii/description)<br>
-//1. State dp[i] represent the max profit by the first i days (前i天)
-//2. State tranfer: dp[i] = dp[i - 1] if prices[i - 1] < prices[i - 2], dp[i] = dp[i - 1] + prices[i - 1] - prices[i - 2] if prices[i - 1] > prices[i - 2].
-//3. dp[0] = 0, dp[1] = 0
+//1. State dp[i] represent the max profit by the first i days (前i天)<br>
+//2. State tranfer: dp[i] = dp[i - 1] if prices[i - 1] < prices[i - 2], dp[i] = dp[i - 1] + prices[i - 1] - prices[i - 2] if prices[i - 1] > prices[i - 2].<br>
+//3. dp[0] = 0, dp[1] = 0<br>
 ```Java
 public int maxProfit(int[] prices) {
     if (prices == null || prices.length == 0) {
@@ -443,6 +443,89 @@ public int maxProfit(int[] prices) {
 }
 ```
 * [Example 5: Best Time to Buy and Sell Stock III](https://www.lintcode.com/problem/best-time-to-buy-and-sell-stock-iii/description)<br>
+// State: dp[i][j] represent the maximum profit by previous i days and state at j in day[i - 1], states from 0, 1, 2, 3, 4<br>
+// State transfer: <br>
+if j is even (not holding stock), dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2];<br>
+if j is odd (holding stock), dp[i][j] = max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i - 1][j - 1], dp[i - 1][j - 2] + prices[i - 1] - prices[i - 2];<br>
+// dp[0][0] = 0; dp[0][1] = dp[0][2] = dp[0][3] = dp[0][4] = Integer.MIN_VALUE because these values are unavailable to use<br>
+```Java
+public static int maxProfit(int[] prices) {
+    if (prices == null || prices.length == 0) {
+        return 0;
+    }
+    int n = prices.length;
+    int[][] dp = new int[prices.length + 1][5];
+    dp[0][1] = dp[0][2] = dp[0][3] = dp[0][4] = Integer.MIN_VALUE;
+    for (int i = 1; i <= prices.length; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (j % 2 == 0) {
+                dp[i][j] = dp[i - 1][j];
+                // j == 0, 2, 4
+                if (i - 2 >= 0 && j - 1 >= 0 && dp[i - 1][j - 1] != Integer.MIN_VALUE) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2]);
+                }
+            } else {
+                // j == 1, 3
+                dp[i][j] = dp[i - 1][j - 1];
+                if (i - 2 >= 0 && dp[i - 1][j] != Integer.MIN_VALUE) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + prices[i - 1] - prices[i - 2]);
+                }
+            }
+        }
+    }
+    return Math.max(dp[n][0], Math.max(dp[n][2], dp[n][4]));
+}
+```
+* [Example 6: Best Time to Buy and Sell Stock IV](https://www.lintcode.com/problem/best-time-to-buy-and-sell-stock-iv/description)<br>
+// State: dp[i][j] represent the maximum profit by previous i days and state at j in day[i - 1], states from 0, 1, 2, 3, 4 ... 2 * k + 1.<br>
+// State transfer: <br>
+if j is even (not holding stock), dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2];<br>
+if j is odd (holding stock), dp[i][j] = max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i - 1][j - 1], dp[i - 1][j - 2] + prices[i - 1] - prices[i - 2];<br>
+// dp[0][0] = 0; dp[0][1] = dp[0][2] = ... = dp[0][2 * k] = Integer.MIN_VALUE because these values are unavailable to use<br>
+```Java
+public int maxProfit(int K, int[] prices) {
+    if (prices == null || prices.length == 0) {
+        return 0;
+    }
+    int n = prices.length;
+    if (K > n) {
+        int res = 0;
+        for (int i = 1; i < n; i++) {
+            if (prices[i] > prices[i - 1]) {
+                res += prices[i] - prices[i - 1];
+            }
+        }
+        return res;
+    }
+    int[][] dp = new int[prices.length + 1][2 * K + 1];
+    dp[0][0] = 0;
+    for (int k = 1; k < 2 * K + 1; k++) {
+        dp[0][k] = Integer.MIN_VALUE;
+    }
+    for (int i = 1; i <= prices.length; i++) {
+        for (int j = 0; j < 2 * K + 1; j++) {
+            if (j % 2 == 0) {
+                dp[i][j] = dp[i - 1][j];
+                // j == 0, 2, 4
+                if (i - 2 >= 0 && j - 1 >= 0 && dp[i - 1][j - 1] != Integer.MIN_VALUE) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2]);
+                }
+            } else {
+                // j == 1, 3
+                dp[i][j] = dp[i - 1][j - 1];
+                if (i - 2 >= 0 && dp[i - 1][j] != Integer.MIN_VALUE) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + prices[i - 1] - prices[i - 2]);
+                }
+            }
+        }
+    }
+    int res = dp[n][0];
+    for (int k = 0; k < 2 * K + 1; k += 2) {
+        res = Math.max(res, dp[n][k]);
+    }
+    return res;
+}
+```
 
 
 
