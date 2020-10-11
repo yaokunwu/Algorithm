@@ -589,7 +589,7 @@ public int maxEnvelopes(int[][] envelopes) {
 ```
 #### DP course#4
 ### 划分型动态规划(系统讲解）
-
+* 要求将一个序列或字符串或数值划分成若干满足要求的片段 -> 最后一步 -> 最后一段
 * [Example 1: Perfect Squares](https://www.lintcode.com/problem/perfect-squares/description)<br>
 //State: dp[i] represent the minimum number of perfect squares that sums up to i
 //State transfer: dp[i] = min(dp[i - j^2] + 1)
@@ -618,7 +618,7 @@ public int minCut(String s) {
         return 0;
     }
     int n = s.length();
-    //生成判断回文串
+    //生成判断回文串 (这个代码可以复用，记住)
     boolean[][] isPalin = new boolean[n][n];
     //construct palin
     for (int i = 0; i < n; i++) {
@@ -659,8 +659,42 @@ public int minCut(String s) {
     return dp[n] - 1;
 }
 ```
-
-
+* [Example 3: Copy Books](https://www.lintcode.com/problem/copy-books/description)<br>
+//State: dp[i][j] represent the minimum time required for j number of persons to copy previous i number of books
+//State transfer: dp[i][k] = min(max(dp[j][k - 1], A[j]+...+ A[i])) | 0<j<=i
+//dp[0][k] = 0, dp[0][0] = 0, dp[i][0] = maxVal
+```Java
+public int copyBooks(int[] pages, int K) {
+    if (pages == null || pages.length == 0) {
+        return 0;
+    }
+    int n = pages.length;
+    int[] preSum = new int[n + 1];
+    preSum[0] = 0;
+    for (int i = 1; i <= n; i++) {
+        preSum[i] = preSum[i - 1] + pages[i - 1];
+    }
+    int[][] dp = new int[K + 1][n + 1];
+    dp[0][0] = 0;
+    for (int k = 0; k <= K; k++) {
+        dp[k][0] = 0;
+    }
+    for (int i = 1; i <= n; i++) {
+        dp[0][i] = Integer.MAX_VALUE;
+    } 
+    for (int k = 1; k <= K; k++) {
+        for (int i = 1; i <= n; i++) {
+            dp[k][i] = Integer.MAX_VALUE;
+            int t = Integer.MIN_VALUE;
+            for (int j = 0; j < i; j++) {
+                t = Math.max(dp[k - 1][j], preSum[i] - preSum[j]);
+                dp[k][i] = Math.min(dp[k][i], t);
+            }
+        }
+    }
+    return dp[K][n];
+} 
+```
 
 
 
