@@ -587,6 +587,85 @@ public int maxEnvelopes(int[][] envelopes) {
     return res;
 }
 ```
+#### DP course#4
+### 划分型动态规划(系统讲解）
+
+* [Example 1: Perfect Squares](https://www.lintcode.com/problem/perfect-squares/description)<br>
+//State: dp[i] represent the minimum number of perfect squares that sums up to i
+//State transfer: dp[i] = min(dp[i - j^2] + 1)
+//dp[0] = 0
+```Java
+public int numSquares(int n) {
+    int[] dp = new int[n + 1];
+    dp[0] = 0;
+    for (int i = 0; i < n; i++) {
+        dp[i] = Integer.MAX_VALUE;
+        for (int j = 1; j * j < i; j++) {
+            dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+        }
+    }
+    return dp[n];
+}    
+```
+
+* [Example 2: Palindrome Partitioning II](https://www.lintcode.com/problem/palindrome-partitioning-ii/description)<br>
+//State: dp[i] represent the minimum cut of previous string end at i - 1. 
+//State transfer: dp[i]  = min(dp[j] + 1) | 0 <= j < i and isPalin(j, i - 1)
+//dp[0] = 0
+```Java
+public int minCut(String s) {
+    if (s == null || s.length() == 0) {
+        return 0;
+    }
+    int n = s.length();
+    //生成判断回文串
+    boolean[][] isPalin = new boolean[n][n];
+    //construct palin
+    for (int i = 0; i < n; i++) {
+        //odd
+        int left, right;
+        left = right = i;
+        while (left >= 0 && right < n) {
+            if (s.charAt(left) != s.charAt(right)) {
+                break;
+            }
+            isPalin[left][right] = true;
+            left--;
+            right++;
+        }
+        //even
+        left = i;
+        right = i + 1;
+        while (left >= 0 && right < n) {
+            if (s.charAt(left) != s.charAt(right)) {
+                break;
+            }
+            isPalin[left][right] = true;
+            left--;
+            right++;
+        }
+    }
+    //dp求解
+    int[] dp = new int[n + 1];
+    dp[0] = 0;
+    for (int i = 1; i <= n; i++) {
+        dp[i] = Integer.MAX_VALUE;
+        for (int j = 0; j < i; j++) {
+            if (isPalin[j][i - 1]) {
+                dp[i] = Math.min(dp[i], dp[j] + 1);
+            }
+        }
+    }
+    return dp[n] - 1;
+}
+```
+
+
+
+
+
+
+
 
 
 
