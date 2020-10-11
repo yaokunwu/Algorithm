@@ -532,9 +532,9 @@ public int maxProfit(int K, int[] prices) {
 #### 最长序列型动态规划
 * [Example 7: Longest Increasing Subsequence](https://www.lintcode.com/problem/longest-increasing-subsequence/description)<br>
 这是个坐标型 (nlogn算法看第七讲) <br>
-//State: dp[i] represent the longest len at the end of num i.
-//State transfer: dp[i] = 1 or max(dp[j] + 1) | j < i and a[j] < a[i] 
-// none
+//State: dp[i] represent the longest len at the end of num i.<br>
+//State transfer: dp[i] = 1 or max(dp[j] + 1) | j < i and a[j] < a[i] <br>
+// none<br>
 ```Java
 public int longestIncreasingSubsequence(int[] nums) {
     if (nums == null || nums.length == 0) {
@@ -557,10 +557,10 @@ public int longestIncreasingSubsequence(int[] nums) {
 ```
 
 * [Example 8: Russian Doll Envelopes](https://www.lintcode.com/problem/russian-doll-envelopes/description)<br>
-这是个坐标型 (**TODO**:nlogn算法看完第七讲后自己写)
-//State: dp[i] represent the maximum number of envelopes at envelop i
-//State transfer: dp[i] = 1 or max(dp[j] + 1) | j < i and width[j] < width[i])
-//None, need to sort first
+这是个坐标型 (**TODO**:nlogn算法看完第七讲后自己写)<br>
+//State: dp[i] represent the maximum number of envelopes at envelop i<br>
+//State transfer: dp[i] = 1 or max(dp[j] + 1) | j < i and width[j] < width[i])<br>
+//None, need to sort first<br>
 ```Java
 public int maxEnvelopes(int[][] envelopes) {
     if (envelopes == null || envelopes.length == 0 || envelopes[0].length == 0) {
@@ -589,11 +589,11 @@ public int maxEnvelopes(int[][] envelopes) {
 ```
 #### DP course#4
 ### 划分型动态规划(系统讲解）
-* 要求将一个序列或字符串或数值划分成若干满足要求的片段 -> 最后一步 -> 最后一段
+* 要求将一个序列或字符串或数值划分成若干满足要求的片段 -> 最后一步 -> 最后一段<br>
 * [Example 1: Perfect Squares](https://www.lintcode.com/problem/perfect-squares/description)<br>
-//State: dp[i] represent the minimum number of perfect squares that sums up to i
-//State transfer: dp[i] = min(dp[i - j^2] + 1)
-//dp[0] = 0
+//State: dp[i] represent the minimum number of perfect squares that sums up to i<br>
+//State transfer: dp[i] = min(dp[i - j^2] + 1)<br>
+//dp[0] = 0<br>
 ```Java
 public int numSquares(int n) {
     int[] dp = new int[n + 1];
@@ -609,9 +609,9 @@ public int numSquares(int n) {
 ```
 
 * [Example 2: Palindrome Partitioning II](https://www.lintcode.com/problem/palindrome-partitioning-ii/description)<br>
-//State: dp[i] represent the minimum cut of previous string end at i - 1. 
-//State transfer: dp[i]  = min(dp[j] + 1) | 0 <= j < i and isPalin(j, i - 1)
-//dp[0] = 0
+//State: dp[i] represent the minimum cut of previous string end at i - 1. <br>
+//State transfer: dp[i]  = min(dp[j] + 1) | 0 <= j < i and isPalin(j, i - 1)<br>
+//dp[0] = 0<br>
 ```Java
 public int minCut(String s) {
     if (s == null || s.length() == 0) {
@@ -660,9 +660,9 @@ public int minCut(String s) {
 }
 ```
 * [Example 3: Copy Books](https://www.lintcode.com/problem/copy-books/description)<br>
-//State: dp[i][j] represent the minimum time required for j number of persons to copy previous i number of books
-//State transfer: dp[i][k] = min(max(dp[j][k - 1], A[j]+...+ A[i])) | 0<j<=i
-//dp[0][k] = 0, dp[0][0] = 0, dp[i][0] = maxVal
+//State: dp[i][j] represent the minimum time required for j number of persons to copy previous i number of books<br>
+//State transfer: dp[i][k] = min(max(dp[j][k - 1], A[j]+...+ A[i])) | 0<j<=i<br>
+//dp[0][k] = 0, dp[0][0] = 0, dp[i][0] = maxVal<br>
 ```Java
 public int copyBooks(int[] pages, int K) {
     if (pages == null || pages.length == 0) {
