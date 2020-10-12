@@ -696,13 +696,136 @@ public int copyBooks(int[] pages, int K) {
 } 
 ```
 
+### 博弈型动态规划(系统讲解）
+通常从第一步分析，而不是最后一步
+* [Example 1: Coins in a Line](https://www.lintcode.com/problem/coins-in-a-line/description)<br>
+//State: dp[i] represent whether it should win facing i number of coins<br>
+//State transfer: dp[i] = !(dp[i - 1] && dp[i - 2]);<br>
+//dp[0] = false; dp[1] = true;<br>
+```Java
+public boolean firstWillWin(int n) {
+    if (n == 0) {
+        return false;
+    }
+    boolean[] f = new boolean[n + 1];
+    int i;
+    f[0] = false;
+    f[1] = true;
+    for (i = 2; i <= n; i++) {
+        f[i] = !(f[i - 1] && f[i - 2]);
+    }
+    return f[n];
+}
+```
 
+### 背包问题(系统讲解）
+* [Example 1: Backpack](https://www.lintcode.com/problem/backpack/description)<br>
+//State: dp[i][j] represent whether previous i items can fill weight of j<br>
+//State transfer: dp[i][j] = dp[i - 1][j] || dp[i - 1][j - weight[i - 1]]<br>
+//dp[0][0] = true;<br>
+```Java
+public int backPack(int m, int[] A) {
+    int n = A.length;
+    boolean[][] f = new boolean[n + 1][m + 1];
+    int i, j;
+    for (i = 0; i <= n; i++) {
+        f[i][0] = true;
+    }
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= m; j++) {
+            f[i][j] = f[i - 1][j];
+            if (j >= A[i - 1]) {
+                f[i][j] = f[i][j] || f[i - 1][j - A[i - 1]];
+            }
+        }
+    }
+    for (i = m; i >= 0; i--) {
+        if (f[n][i]) {
+            break;
+        }
+    }
+    return i;
+}
+```
+* [Example 2: Backpack V](https://www.lintcode.com/problem/backpack-v/description)<br>
+//State: dp[i][j] represent how many way to fill j with previous i item<br>
+//State transfer: dp[i][j] = dp[i - 1][j] + dp[i - 1][j - A[i - 1]];<br>
+//dp[0][0] = 1;<br>
+```Java
+public int backPackV(int[] nums, int target) {
+    if (nums == null || nums.length == 0) {
+        return 1;
+    }
+    int n = nums.length;
+    int[] f = new int[target + 1];
+    int i, j;
+    f[0] = 1;
+    for (i = 1; i <= n; i++) {
+        for (j = target; j >= 0; j--) {
+            if (j >= nums[i - 1]) {
+                f[j] += f[j - nums[i - 1]];
+            }
+        }
+    }
+    return f[target];
+}
+```
+* [Example 3: Backpack VI](https://www.lintcode.com/problem/combination-sum-iv/description)<br>
+//State: dp[i] represent how many way to fill i<br>
+//State transfer: dp[i] = forAll num : nums sum(dp[i - num])<br>
+//dp[0] = 1<br>
+```Java
+public int backPackVI(int[] nums, int target) {
+    int[] dp = new int[target + 1];
+    dp[0] = 0;
+    for (int i = 1; i <= target; i++) {
+        for (int j = 0; j < nums.length; j++) {
+            if (i >= nums[j]) {
+                dp[i] += dp[i - nums[j]];
+            }
+        }
+    }
+    return dp[target];
+}
+```
 
+#### DP course#5
+* [Example 1: Backpack II](https://www.lintcode.com/problem/backpack-ii/description)<br>
+//State: dp[i][j] represent the maximum profit at weight j for previous i items<br>
+//State transfer: dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i - 1]] + profit[i - 1])<br>
+//dp[0][0] = 0<br>
+```Java
+public int backPackII(int m, int[] A, int[] V) {
+    int[][] dp = new int[A.length + 1][m + 1];
+    dp[0][0] = 0;
+    for (int i = 1; i <= A.length; i++) {
+        for (int j = 0; j <= m; j++) {
+            dp[i][j] = dp[i - 1][j];
+            if (j >= A[i - 1]) {
+                dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - A[i - 1]] + V[i - 1];
+            }
+        }
+    }
+    return dp[A.length][m];
+}    
+```
 
-
-
-
-
-
+* [Example 2: Backpack III](https://www.lintcode.com/problem/backpack-iii/)<br>
+//State: dp[i] represent the maximum profit at capacity i<br>
+//State transfer: dp[i] = forAll item j max(dp[i - weight[j]] + profit[j])<br>
+//dp[0] = 0<br>
+```Java
+public int backPackII(int m, int[] A, int[] V) {
+    int[] dp = new int[m + 1];
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j < A.length; j++) {
+            if (i >= A[j]) {
+                dp[i] = Math.max(dp[i], dp[i - A[j]] + V[j]);
+            }
+        }
+    }
+    return dp[m];
+}    
+```
 
 
