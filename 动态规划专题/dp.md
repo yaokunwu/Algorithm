@@ -828,4 +828,209 @@ public int backPackII(int m, int[] A, int[] V) {
 }    
 ```
 
+### 区间型动态规划
+* 给定一个序列/字符串，进行一些操作
+* 最后一步会将序列/字符串去头/去尾
+* 剩下的会是一个区间[i,j]
+* 状态自然定义为f[i][j],表示面对子序列[i...j]时的最优性质
+* [Example 1: Longest Palindromic Subsequence](https://www.lintcode.com/problem/longest-palindromic-subsequence/description)<br>
+//State: dp[i][j] represent the longest subsequence from i to j<br>
+//State transfer: dp[i][j] = max(dp[i + 1][j]| s[i] != s[j], dp[i][j - 1]| s[i] != s[j], dp[i + 1][j - 1] + 2 | s[i] == s[j])<br>
+//dp[i][j] = 1 | i == j<br>
+```Java
+/** 递推　**/
+public int longestPalindromeSubseq(String ss) {
+    if (ss == null || ss.length() == 0) {
+        return 0;
+    }
+    char[] s = ss.toCharArray();
+    int n = s.length;
+    int[][] f = new int[n][n];
+    for (int i = 0; i < n; i++) {
+        f[i][i] = 1;
+    }
+    //这个循环方式需要背过
+    for (int len = 2; len <= n; len++) {
+        for (int i = 0; i <= n - len; i++) {
+            int j = i + len - 1;
+            f[i][j] = Math.max(f[i + 1][j], f[i][j - 1]);
+            if (s[i] == s[j]) {
+                f[i][j] = Math.max(f[i][j], f[i + 1][j - 1] + 2);
+            }
+        }
+    }
+    return f[0][n - 1];
+}
+
+/** 递归　**/
+private void Compute(int i, int j) {
+    if (f[i][j] != null) {
+        return;
+    }
+    if (i == j) {
+        return 1;
+    }
+    
+    //this base case is very important
+    if (i + 1 == j) {
+        f[i][j] = (s[i] == s[j]) ? 2 : 1;
+        return;
+    }
+    
+    Compute(i + 1, j);
+    Compute(i, j - 1);
+    Compute(i + 1, j - 1);
+    f[i][j] = Math.max(f[i + 1][j], f[i][j - 1]);
+    if (s[i] == s[j]) {
+        f[i][j] = Math.max(f[i][j], f[i + 1][j - 1] + 2);
+    }
+}
+
+Integer[][] f;
+public int longestPalindromeSubseq(String ss) {
+    if (ss == null || ss.length() == 0) {
+        return 0;
+    }
+    char[] s = ss.toCharArray();
+    int n = s.length;
+    f = new Integer[n][n];
+    Compute(0, n - 1);
+    return f[0][n - 1];
+}
+```
+
+* [Example 2: Coins in a line III](https://www.lintcode.com/problem/coins-in-a-line-iii/)<br>
+//State: dp[i][j] represent the maximum sum difference between current player with the other<br>
+//State transfer: dp[i][j] = max(m - dp[i + 1][j], m - dp[i][j - 1])<br>
+//dp[i][j] = arr[i] | i == j<br>
+```Java
+public boolean coinsInALineIII(int[] A) {
+    if (A.length == 0) {
+        return true;
+    }
+    int n = A.length;
+    int[][] f = new int[n][n];
+    for (int i = 0; i < n; i++) {
+        f[i][i] = A[i];
+    }
+    for (int len = 2; len <= n; len++) {
+        for (int i = 0; i <= n - len; i++) {
+            int j = i + len - 1;
+            f[i][j] = Math.max(A[i] - f[i + 1][j], A[j] - f[i][j - 1]);
+        }
+    }
+    return f[0][n - 1] >= 0;
+}
+```
+
+* [Example 3: Scramble String](https://www.lintcode.com/problem/scramble-string/description)<br>
+//State: dp[i][j][k] represent whether it is convertable from string1[i to i + k] to string2[j to j + l]<br>
+//State transfer: dp[i][j][k] = forAll 0 < w < k ((f[i][j][w] && f[i + w][j + w][k - w])) || ((f[i][k - w + j][w] && f[i + w][j][k - w]))<br>
+//dp[i][j][1] = s1[i] == s2[j] ? true : false<br>
+```Java
+public boolean isScramble(String ss1, String ss2) {
+    char[] s1 = ss1.toCharArray();
+    char[] s2 = ss2.toCharArray();
+    int n = s1.length;
+    boolean[][][] f = new boolean[n][n][n + 1];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            f[i][j][1] = s1[i] == s2[j] ? true : false;
+        }
+    }
+    for (int k = 2; k <= n; k++) {
+        for (int i = 0; i <= n - k; i++) {
+            for (int j = 0; j <= n - k; j++) {
+                f[i][j][k] = false;
+                for (int w = 1; w < k; w++) {
+                    f[i][j][k] = f[i][j][k] || (f[i][j][w] && f[i + w][j + w][k - w]);
+                    if (f[i][j][k]) {
+                        break;
+                    }
+                    f[i][j][k] = f[i][j][k] || (f[i][k - w + j][w] && f[i + w][j][k - w]);
+                    if (f[i][j][k]) {
+                        break;
+                    }   
+                }
+            }
+        }
+    }
+    return f[0][0][n];
+}
+```
+```Java
+// 自顶向下动规。但是注意因为我不想操作两个串的i to j, k to h 我就用了substring 但这样做时map中的只能是两个string的连接，会造成大量时间消耗。 所以更好的方法是引入参数 i, j, k 表示从s1的i开始，s2的j开始长度为k的字符串能否互相转化，这样就可以利用数组进行记录，而不是直接用两个string用map记录。速度会加快很多。
+Map<String, Boolean> map;
+public boolean isScramble(String s1, String s2) {
+    map = new HashMap<>();
+    return dfs(s1, s2);
+}
+
+private boolean dfs(String s1, String s2) {
+    if (map.containsKey(s1 + s2)) {
+        return map.get(s1 + s2);
+    }
+    if (s1.equals(s2)) {
+        return true;
+    }
+
+    boolean res = false;
+    for (int i = 0; i < s1.length() - 1; i++) {
+        String subS1left = s1.substring(0, i + 1);
+        String subS1right = s1.substring(i + 1, s1.length());
+        String subS2left1 = s2.substring(0, i + 1);
+        String subS2right1 = s2.substring(i + 1, s1.length());
+        String subS2left2 = s2.substring(s2.length() - (i + 1), s2.length());
+        String subS2right2 = s2.substring(0, s2.length() - (i + 1));
+        res = res || ((dfs(subS1left, subS2left1) && dfs(subS1right, subS2right1)) || (dfs(subS1left, subS2left2) && dfs(subS1right, subS2right2)));
+        if (res) {
+            break;
+        }
+    }
+    map.put(s1 + s2, res);
+    return res;
+}
+```
+
+* [Example 4: Burst Balloons](https://www.lintcode.com/problem/burst-balloons/description)<br>
+//State: dp[i][j] represent the maximum amount can be obtained from i + 1 to j - 1 balloons
+//State transfer: dp[i][j] = forAll k | 0 <= k <= j max(dp[i][k] + dp[k][j] + price[k]);
+//dp[0][1] = dp[1][2] = ... = dp[i][i + 1] = 0
+```Java
+public int maxCoins(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return 0;
+    }
+    int n = nums.length + 2;
+    int[] A = new int[n];
+    for (int i = 0; i < n; i++) {
+        if (i == 0 || i == n - 1) {
+            A[i] =  1;
+        } else {
+            A[i] = nums[i - 1];
+        }
+    }
+    int[][] f = new int[n][n];
+    for (int i = 0; i < n - 1; i++) {
+        f[i][i + 1] = 0;
+    }
+    for (int len = 3; len <= n; len++) {
+        for (int i = 0; i <= n - len; i++) {
+            int j = i + len - 1;
+            f[i][j] = 0;
+            for (int k = i + 1; k < j; k++) {
+                f[i][j] = Math.max(f[i][j], f[i][k] + f[k][j] + A[i] * A[k] * A[j]);
+            }
+        }
+    }
+    return f[0][n - 1];
+}
+```
+
+
+
+
+
+
+
 
