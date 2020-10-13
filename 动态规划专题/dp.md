@@ -993,9 +993,9 @@ private boolean dfs(String s1, String s2) {
 ```
 
 * [Example 4: Burst Balloons](https://www.lintcode.com/problem/burst-balloons/description)<br>
-//State: dp[i][j] represent the maximum amount can be obtained from i + 1 to j - 1 balloons
-//State transfer: dp[i][j] = forAll k | 0 <= k <= j max(dp[i][k] + dp[k][j] + price[k]);
-//dp[0][1] = dp[1][2] = ... = dp[i][i + 1] = 0
+//State: dp[i][j] represent the maximum amount can be obtained from i + 1 to j - 1 balloons<br>
+//State transfer: dp[i][j] = forAll k | 0 <= k <= j max(dp[i][k] + dp[k][j] + price[k]);<br>
+//dp[0][1] = dp[1][2] = ... = dp[i][i + 1] = 0<br>
 ```Java
 public int maxCoins(int[] nums) {
     if (nums == null || nums.length == 0) {
@@ -1034,10 +1034,10 @@ public int maxCoins(int[] nums) {
 * 可以转化为二维动态规划
 
 * [Example 1: Longest Common Subsequence](https://www.lintcode.com/problem/longest-common-subsequence/description)<br>
-//State: dp[i][j] represent the longest length from previous i from str1 and previous j from str2.
-//State transfer: dp[i][j] = max(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1] + 1 | str1[i - 1] == str2[j - 1])
-// dp[0][n] = 0, dp[m][0] = 0
-//注意这题可以输出最终选择的字串结果，倒序打印
+//State: dp[i][j] represent the longest length from previous i from str1 and previous j from str2.<br>
+//State transfer: dp[i][j] = max(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1] + 1 | str1[i - 1] == str2[j - 1])<br>
+// dp[0][n] = 0, dp[m][0] = 0<br>
+//注意这题可以输出最终选择的字串结果，倒序打印<br>
 ```Java
 public int longestCommonSubsequence(String A, String B) {
     if (A == null || B == null) {
@@ -1068,10 +1068,10 @@ public int longestCommonSubsequence(String A, String B) {
 ```
 
 * [Example 2: Interleaving String](https://www.lintcode.com/problem/interleaving-string/description)<br>
-//State: dp[s][i][j] represent the previous s characters can be obtained from previous i characters from A and previous j characters from B.
-//Important observation: 自由度其实为2 because i + j = s. So the state can be represented by dp[i][j], which represent whether the previous i + j characters in s3 can be obtained from previous i characters from A and previous j characters from B. 以后设置状态的时候都可以考虑一下状态本身有没有关系，从而可以简化状态表示。
-//State transfer: dp[i][j] = dp[i - 1][j] if (s3[i + j - 1] come from A) or dp[i][j - 1] if (s3[i + j - 1] come from B)
-//dp[0][0] = true;
+//State: dp[s][i][j] represent the previous s characters can be obtained from previous i characters from A and previous j characters from B.<br>
+//Important observation: 自由度其实为2 because i + j = s. So the state can be represented by dp[i][j], which represent whether the previous i + j characters in s3 can be obtained from previous i characters from A and previous j characters from B. 以后设置状态的时候都可以考虑一下状态本身有没有关系，从而可以简化状态表示。<br>
+//State transfer: dp[i][j] = dp[i - 1][j] if (s3[i + j - 1] come from A) or dp[i][j - 1] if (s3[i + j - 1] come from B)<br>
+//dp[0][0] = true;<br>
 ```Java
 public boolean isInterleave(String ss1, String ss2, String ss3) {
     char[] s1 = ss1.toCharArray();
@@ -1101,9 +1101,10 @@ public boolean isInterleave(String ss1, String ss2, String ss3) {
 ```
 
 * [Example 3: Edit Distance](https://www.lintcode.com/problem/edit-distance/description)<br>
-//State: dp[i][j] represent the minimum edit distance from previous i characters of A to previous j characters from B
-//State transfer: dp[i][j] = min(dp[i][j - 1] + 1, dp[i - 1][j] + 1, dp[i - 1][j - 1] + 1, dp[i - 1][j - 1] | str1[i - 1] == str2[j - 1]);
-//dp[0][j] = j, dp[i][0] = i
+//State: dp[i][j] represent the minimum edit distance from previous i characters of A to previous j characters from B<br>
+//State transfer: dp[i][j] = min(dp[i][j - 1] + 1, dp[i - 1][j] + 1, dp[i - 1][j - 1] + 1, dp[i - 1][j - 1] | str1[i - 1] == str2[j - 1]);<br>
+//dp[0][j] = j, dp[i][0] = i<br>
+
 ```Java
 public int minDistance(String word1, String word2) {
     char[] s1 = word1.toCharArray();
@@ -1134,9 +1135,9 @@ public int minDistance(String word1, String word2) {
 ```
 
 * [Example 4: Distinct Subsequences](https://www.lintcode.com/problem/distinct-subsequences/description)<br>
-//State: dp[i][j] represent how many times previous j characters in B occurs in previous i characters in A
-//State transfer: dp[i][j] = dp[i - 1][j - 1] | A[i - 1] == B[j - 1]  + dp[i - 1][j]
-//dp[0][0] = 1, dp[0][j] = 0, dp[i][0] = 1 (这里dp[i][0] = 1是从使递推方程成立的角度考虑的)
+//State: dp[i][j] represent how many times previous j characters in B occurs in previous i characters in A<br>
+//State transfer: dp[i][j] = dp[i - 1][j - 1] | A[i - 1] == B[j - 1]  + dp[i - 1][j]<br>
+//dp[0][0] = 1, dp[0][j] = 0, dp[i][0] = 1 (这里dp[i][0] = 1是从使递推方程成立的角度考虑的)<br>
 ```Java
 public int numDistinct(String S, String T) {
     char[] s1 = S.toCharArray();
@@ -1166,12 +1167,12 @@ public int numDistinct(String S, String T) {
 ```
 
 * [Example 5: Regular Expression Matching](https://www.lintcode.com/problem/regular-expression-matching/description)<br>
-//State: dp[i][j] represent whether previous j characters in regular expression string can match previous i characters in orginal string.
+//State: dp[i][j] represent whether previous j characters in regular expression string can match previous i characters in orginal string.<br>
 //State transfer: dp[i][j] =
-dp[i - 1][j - 1] | s1[i - 1] == s2[j - 1] and s2[j - 1] != *
-dp[i - 1][j] | s2[j - 1] == * and s2[j - 2] == s1[i - 1] or s[j - 2] == '.'
-dp[i][j - 2] | s2[j - 1] == *
-//dp[0][0] = true; dp[i][0] = false;
+dp[i - 1][j - 1] | s1[i - 1] == s2[j - 1] and s2[j - 1] != * <br>
+dp[i - 1][j] | s2[j - 1] == * and s2[j - 2] == s1[i - 1] or s[j - 2] == '.' <br>
+dp[i][j - 2] | s2[j - 1] == * <br>
+//dp[0][0] = true; dp[i][0] = false;<br>
 ```Java
 public boolean isMatch(String s, String p) {
     char[] s1 = s.toCharArray();
