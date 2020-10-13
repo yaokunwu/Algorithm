@@ -1027,6 +1027,192 @@ public int maxCoins(int[] nums) {
 }
 ```
 
+#### DP course#6
+### 双序列型动态规划
+* 有两个序列/字符串，需要进行一些操作
+* 每个序列本身是一维的
+* 可以转化为二维动态规划
+
+* [Example 1: Longest Common Subsequence](https://www.lintcode.com/problem/longest-common-subsequence/description)<br>
+//State: dp[i][j] represent the longest length from previous i from str1 and previous j from str2.
+//State transfer: dp[i][j] = max(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1] + 1 | str1[i - 1] == str2[j - 1])
+// dp[0][n] = 0, dp[m][0] = 0
+//注意这题可以输出最终选择的字串结果，倒序打印
+```Java
+public int longestCommonSubsequence(String A, String B) {
+    if (A == null || B == null) {
+        return 0;
+    }
+    if (A.length() == 0 || B.length() == 0) {
+        return 0;
+    }
+    char[] s1 = A.toCharArray();
+    char[] s2 = B.toCharArray();
+    int m = s1.length;
+    int n = s2.length;
+    int[][] f = new int[m + 1][n + 1];
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= n; j++) {
+            if (i == 0 || j == 0) {
+                f[i][j] = 0;
+                continue;
+            }
+            f[i][j] = Math.max(f[i][j - 1], f[i - 1][j]);
+            if (s1[i - 1] == s2[j - 1]) {
+                f[i][j] = Math.max(f[i][j], f[i - 1][j - 1] + 1);
+            }
+        }
+    }
+    return f[m][n];
+}
+```
+
+* [Example 2: Interleaving String](https://www.lintcode.com/problem/interleaving-string/description)<br>
+//State: dp[s][i][j] represent the previous s characters can be obtained from previous i characters from A and previous j characters from B.
+//Important observation: 自由度其实为2 because i + j = s. So the state can be represented by dp[i][j], which represent whether the previous i + j characters in s3 can be obtained from previous i characters from A and previous j characters from B. 以后设置状态的时候都可以考虑一下状态本身有没有关系，从而可以简化状态表示。
+//State transfer: dp[i][j] = dp[i - 1][j] if (s3[i + j - 1] come from A) or dp[i][j - 1] if (s3[i + j - 1] come from B)
+//dp[0][0] = true;
+```Java
+public boolean isInterleave(String ss1, String ss2, String ss3) {
+    char[] s1 = ss1.toCharArray();
+    char[] s2 = ss2.toCharArray();
+    char[] s3 = ss3.toCharArray();
+    int m = s1.length;
+    int n = s2.length;
+    int x = s3.length;
+    if (m + n != x) {
+        return false;
+    }
+    boolean[][] f = new boolean[m + 1][n + 1];
+    f[0][0] = true;
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= n; j++) {
+            f[i][j] = false;
+            if (i > 0 && s3[i + j - 1] == s1[i - 1]) {
+                f[i][j] = f[i][j] || f[i - 1][j];
+            }
+            if (j > 0 && s3[i + j - 1] == s2[j - 1]) {
+                f[i][j] = f[i][j] || f[i][j - 1];
+            }
+        }
+    }
+    return f[m][n];
+}
+```
+
+* [Example 3: Edit Distance](https://www.lintcode.com/problem/edit-distance/description)<br>
+//State: dp[i][j] represent the minimum edit distance from previous i characters of A to previous j characters from B
+//State transfer: dp[i][j] = min(dp[i][j - 1] + 1, dp[i - 1][j] + 1, dp[i - 1][j - 1] + 1, dp[i - 1][j - 1] | str1[i - 1] == str2[j - 1]);
+//dp[0][j] = j, dp[i][0] = i
+```Java
+public int minDistance(String word1, String word2) {
+    char[] s1 = word1.toCharArray();
+    char[] s2 = word2.toCharArray();
+    int m = s1.length;
+    int n = s2.length;
+    int[][] f = new int[m + 1][n + 1];
+    int i, j;
+    for (i = 0; i <= m; i++) {
+        for (j = 0; i <= n; j++) {
+            if (i == 0) {
+                f[i][j] = j;
+                continue;
+            }
+            if (j == 0) {
+                f[i][j] = i;
+                continue;
+            }
+            f[i][j] = Integer.MAX_VALUE;
+            f[i][j] = Math.min(Math.min(f[i][j - 1] + 1, f[i - 1][j] + 1), f[i - 1][j - 1] + 1);
+            if (s1[i - 1] == s2[j - 1]) {
+                f[i][j] = Math.min(f[i][j], f[i - 1][j - 1]);
+            }
+        }
+    }
+    return f[m][n];
+}
+```
+
+* [Example 4: Distinct Subsequences](https://www.lintcode.com/problem/distinct-subsequences/description)<br>
+//State: dp[i][j] represent how many times previous j characters in B occurs in previous i characters in A
+//State transfer: dp[i][j] = dp[i - 1][j - 1] | A[i - 1] == B[j - 1]  + dp[i - 1][j]
+//dp[0][0] = 1, dp[0][j] = 0, dp[i][0] = 1 (这里dp[i][0] = 1是从使递推方程成立的角度考虑的)
+```Java
+public int numDistinct(String S, String T) {
+    char[] s1 = S.toCharArray();
+    char[] s2 = T.toCharArray();
+    int m = s1.length;
+    int n = s2.length;
+    int[][] f = new int[m + 1][n + 1];
+    int i, j
+    for (i = 0; i <= m; i++) {
+        for (j = 0; j <= n; j++) {
+            if (j == 0) {
+                f[i][j] = 1;
+                continue;
+            }
+            if (i == 0) {
+                f[i][j] = 0;
+                continue;
+            }
+            f[i][j] = f[i - 1][j];
+            if (s1[i - 1] == s2[j - 1]) {
+                f[i][j] += dp[i - 1][j - 1];
+            }
+        }
+    }
+    return f[m][n];
+}   
+```
+
+* [Example 5: Regular Expression Matching](https://www.lintcode.com/problem/regular-expression-matching/description)<br>
+//State: dp[i][j] represent whether previous j characters in regular expression string can match previous i characters in orginal string.
+//State transfer: dp[i][j] =
+dp[i - 1][j - 1] | s1[i - 1] == s2[j - 1] and s2[j - 1] != *
+dp[i - 1][j] | s2[j - 1] == * and s2[j - 2] == s1[i - 1] or s[j - 2] == '.'
+dp[i][j - 2] | s2[j - 1] == *
+//dp[0][0] = true; dp[i][0] = false;
+```Java
+public boolean isMatch(String s, String p) {
+    char[] s1 = s.toCharArray();
+    char[] s2 = p.toCharArray();
+    int m = s1.length;
+    int n = s2.length;
+    boolean[][] f = new boolean[m + 1][n + 1];
+    int i, j;
+    for (i = 0; i <= m; i++) {
+        for (j = 0; j <= n; j++) {
+            if (i == 0 && j == 0) {
+                f[i][j] = true;
+                continue;
+            }
+            if (j == 0) {
+                f[i][j] = false;
+                continue;
+            }
+            f[i][j] = false;
+
+            if (s2[j - 1] != '*') {
+                if (i > 0 && (s2[j - 1] == '.' || s2[j - 1] == s1[i - 1])) {
+                    f[i][j] = f[i - 1][j - 1];
+                }
+            } else {
+                if (j > 1) {
+                    f[i][j] |= f[i][j - 2];
+                    if (i > 0 && (s2[j - 2] == '.' || s2[j - 2] == s1[i - 1])) {
+                        f[i][j] |= f[i - 1][j];
+                    }
+                }
+            }
+        }
+    }
+    return f[m][n];
+}
+```
+
+
+
+
 
 
 
