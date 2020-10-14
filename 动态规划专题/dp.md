@@ -1289,6 +1289,10 @@ public int findMaxForm(String[] strs, int m, int n) {
 }
 ```
 
+#### DP course#7
+* 最难的动态规划题。。
+* 综合型动态规划
+* 需要辅助数据结构/算法
 
 
 
