@@ -1211,10 +1211,83 @@ public boolean isMatch(String s, String p) {
 }
 ```
 
+* [Example 6: Wildcard Matching](https://www.lintcode.com/problem/wildcard-matching/description)<br>
+//State: dp[i][j] represent whether previous j characters in wildcard string can match previous i characters in orginal string.<br>
+//State transfer: dp[i][j] = <br>
+dp[i - 1][j - 1] | s2[j - 1] != * && (s1[i - 1] == s2[j - 1] or s2[j - 1] == '?')<br>
+dp[i - 1][j] || dp[i][j - 1]<br>
+//dp[0][0] = true; dp[i][0] = false;<br>
+```Java
+public boolean isMatch(String s, String p) {
+    char[] s1 = s.toCharArray();
+    char[] s2 = p.toCharArray();
+    int m = s1.length;
+    int n = s2.length;
+    boolean[][] f = new boolean[m + 1][n + 1];
+    int i, j;
+    for (i = 0; i <= m; i++) {
+        for (j = 0; j <= n; j++) {
+            if (i == 0 && j == 0) {
+                f[i][j] = true;
+                continue;
+            }
+            if (j == 0) {
+                f[i][j] = false;
+                continue;
+            }
+            if (s2[j - 1] != '*') {
+                if (i > 0 && (s2[j - 1] == '?' || s2[j - 1] == s1[i - 1])) {
+                    f[i][j] |= f[i - 1][j - 1];
+                }
+            } else {
+                if (i > 0) {
+                    f[i][j] |= (f[i - 1][j] || f[i][j - 1]);
+                }
+            }
+        }
+    }
+    return f[m][n];
+}
+```
 
-
-
-
+随便讲的例子，跟背包问题类似
+* [Example 7: Ones and Zeroes](https://www.lintcode.com/problem/ones-and-zeroes/description)<br>
+//State: dp[i][j][k] represent the maximum number of string can be formed by previous i string with j 0s and k 1s<br>
+//State transfer: dp[i][j][k] = max(dp[i - 1][j][k], dp[i - 1][j - zeros[i - 1]][k - ones[i - 1]] + 1<br>
+//dp[0][m][n] = 0<br>
+```Java
+public int findMaxForm(String[] strs, int m, int n) {
+    int len = strs.length;
+    int[][] counts = new int[len][2];
+    for (int i = 0; i < len; i++) {
+        String str = strs[i];
+        char[] s = str.toCharArray();
+        for (int j = 0; j < s.length; j++) {
+            if (s[j] == '0') {
+                counts[i][0]++;
+            } else {
+                counts[i][1]++;
+            }
+        }
+    }
+    int[][][] f = new int[len + 1][m + 1][n + 1];
+    for (int i = 0; i <= len; i++) {
+        for (int j = 0; j <= m; j++) {
+            for (int k = 0; k <= n; k++) {
+                if (i == 0 || j == 0 || k == 0) {
+                    f[i][j][k] = 0;
+                    continue;
+                }
+                f[i][j][k] = f[i - 1][j][k];
+                if (j - counts[i - 1][0] >= 0 && k - counts[i - 1][1] >= 0) {
+                    f[i][j][k] = Math.max(f[i][j][k], f[i - 1][j - counts[i - 1][0]][k - counts[i - 1][1]] + 1);
+                }
+            }
+        }
+    }
+    return f[len][m][n];
+}
+```
 
 
 
