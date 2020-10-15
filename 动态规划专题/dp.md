@@ -1293,8 +1293,62 @@ public int findMaxForm(String[] strs, int m, int n) {
 * 最难的动态规划题。。
 * 综合型动态规划
 * 需要辅助数据结构/算法
+* [Example 1: Minimum Adjustment Cost](https://www.lintcode.com/problem/minimum-adjustment-cost/description)<br>
+//State: dp[i][j] represent the minimum adjustment cost of previous i element with B[i - 1] changed to j
+//State transfer: dp[i][j] = forAll j - target <= k <= j + target min(dp[i - 1][k] + abs(A[i - 1] - j))
+//dp[0][j] = 0
+```Java
+public int MinAdjustmentCost(List<Integer> A, int target) {
+    if (A == null || A.size() == 0) {
+        return 0;
+    }
+    int n = A.size();
+    int[][] f = new int[n + 1][101];
+    int i, j, k;
+    for (i = 0; i <= n; i++) {
+        for (j = 1; j <= 100; j++) {
+            if (i == 0) {
+                f[i][j] = 0;
+                continue;
+            }
+            f[i][j] = Integer.MAX_VALUE;
+            int left = Math.max(1, j - target);
+            int right = Math.min(100, j + target);
+            for (k = left; k <= right; k++) {
+                f[i][j] = Math.min(f[i][j], f[i - 1][k] + Math.abs(A.get(i - 1) - j));
+            }
+        }
+    }
+    int res = Integer.MAX_VALUE;
+    for (j = 1; j <= 100; j++) {
+        res = Math.min(res, f[n][j]);
+    }
+    return res;
+}
+```
 
+* [Example 2: k Sum](https://www.lintcode.com/problem/k-sum/description)<br>
+//State: dp[i][j][k] represent how many solutions are there for previous i elements with sum of j and size of k
+//State transfer: dp[i][j][k] = dp[i - 1][j][k] + dp[i - 1][j - num[i - 1]][k - 1]
+//dp[0][0][0] = 1
+```Java
+public int kSum(int[] A, int K, int target) {
+    int n = A.length;
+    int[][][] f = new int[n + 1][target + 1][K + 1];
+    int i, j, k;
+    f[0][0][0] = 1;
+    for (i = 1; i <= n; i++) {
+        for (j = 0; j <= target; j++) {
+            for (k = 0; k <= K; k++) {
+                f[i][j][k] = f[i - 1][j][k];
+                if (k > 0 && j - A[i - 1] >= 0) {
+                   f[i][j][k] += f[i - 1][j - A[i - 1]][k - 1];
+                }
+            }
+        }
+    }
+    return f[n][target][K];
+}
+```
 
-
-
-
+* [Example 3: Longest Increasing Subsequence O(nlogn)](https://www.lintcode.com/problem/longest-increasing-subsequence/description)<br>
