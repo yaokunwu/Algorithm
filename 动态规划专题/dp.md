@@ -1294,9 +1294,9 @@ public int findMaxForm(String[] strs, int m, int n) {
 * 综合型动态规划
 * 需要辅助数据结构/算法
 * [Example 1: Minimum Adjustment Cost](https://www.lintcode.com/problem/minimum-adjustment-cost/description)<br>
-//State: dp[i][j] represent the minimum adjustment cost of previous i element with B[i - 1] changed to j
-//State transfer: dp[i][j] = forAll j - target <= k <= j + target min(dp[i - 1][k] + abs(A[i - 1] - j))
-//dp[0][j] = 0
+//State: dp[i][j] represent the minimum adjustment cost of previous i element with B[i - 1] changed to j<br>
+//State transfer: dp[i][j] = forAll j - target <= k <= j + target min(dp[i - 1][k] + abs(A[i - 1] - j))<br>
+//dp[0][j] = 0<br>
 ```Java
 public int MinAdjustmentCost(List<Integer> A, int target) {
     if (A == null || A.size() == 0) {
@@ -1328,9 +1328,9 @@ public int MinAdjustmentCost(List<Integer> A, int target) {
 ```
 
 * [Example 2: k Sum](https://www.lintcode.com/problem/k-sum/description)<br>
-//State: dp[i][j][k] represent how many solutions are there for previous i elements with sum of j and size of k
-//State transfer: dp[i][j][k] = dp[i - 1][j][k] + dp[i - 1][j - num[i - 1]][k - 1]
-//dp[0][0][0] = 1
+//State: dp[i][j][k] represent how many solutions are there for previous i elements with sum of j and size of k<br>
+//State transfer: dp[i][j][k] = dp[i - 1][j][k] + dp[i - 1][j - num[i - 1]][k - 1]<br>
+//dp[0][0][0] = 1<br>
 ```Java
 public int kSum(int[] A, int K, int target) {
     int n = A.length;
@@ -1466,4 +1466,32 @@ public class kEditDistance {
         }
     }
 }
+```
+
+* [Example 5: Frog Jump](https://www.lintcode.com/problem/frog-jump/description)<br>
+//State: dp[i][j] represent whether the frog can reach stone idx i with last step of j
+//State transfer: dp[i][j] = dp[idx[a[i] - (j - 1)]][j - 1] || dp[idx[a[i] - j]][j] || dp[idx[a[i] - (j + 1)]][j + 1];
+//可以直接用a[i]做key
+```Java
+public boolean canCross(int[] stones) {
+    int n = stones.length;
+    Map<Integer, Set<Integer>> stepSet = new HashMap<>();
+    for (int i = 0; i < n; i++) {
+        stepSet.put(stones[i], new HashSet<>());
+    }
+    stepSet.get(stones[0]).add(0);
+    for (int i = 0; i < n ; i++) {
+        Set<Integer> currSet = new HashSet<>(stepSet.get(stones[i]));
+        for (int step : currSet) {
+            for (int delta = -1; delta <= 1; delta++) {
+                int nextStep = step + delta;
+                int nextStone = stones[i] + nextStep;
+                if (stepSet.containsKey(nextStone)) {
+                    stepSet.get(nextStone).add(nextStep);
+                }
+            }
+        }
+    }
+    return !stepSet.get(stones[n - 1]).isEmpty();
+}  
 ```
