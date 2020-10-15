@@ -1352,3 +1352,118 @@ public int kSum(int[] A, int K, int target) {
 ```
 
 * [Example 3: Longest Increasing Subsequence O(nlogn)](https://www.lintcode.com/problem/longest-increasing-subsequence/description)<br>
+```Java
+public int longestIncreasingSubsequence(int[] nums) {
+    if (nums == null || nums.length == 0) {
+        return 0;
+    }
+    int n = nums.length;
+    //index represent the length of subsequence;
+    //value represent the the smallest value in nums having that length;
+    int[] A = new int[n + 1];
+    A[0] = Integer.MIN_VALUE;
+    int longest = 0;
+    for (int i = 0; i < n; i++) {
+        int left = 0, right = longest + 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (A[mid] < nums[i]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        A[right] = nums[i];
+        if (right > longest) {
+            longest = right;
+        }
+    }
+    return longest;
+}
+```
+
+* [Example 4: K Edit Distance](https://www.lintcode.com/problem/k-edit-distance/)<br>
+//State: dp["prefix"][j] represent the minimum edit distance from prefix of A to previous j characters from B<br>
+//State transfer: dp["prefix"][j] = min(dp[i][j - 1] + 1, dp["prefix - 1"][j] + 1, dp["prefix - 1"][j - 1] + 1, dp["prefix - 1"][j - 1] | str1[i - 1] == str2[j - 1]);<br>
+//dp[""][j] = j<br>
+```Java
+class TrieNode {
+    TrieNode[] c;
+    boolean isWord;
+    String word;
+
+    TrieNode() {
+        c = new TrieNode[26];
+        for (int i = 0; i < 26; i++) {
+            c[i] = null;
+        }
+        isWord = false;
+        word = null;
+    }
+
+    public static void insert(TrieNode root, String str) {
+        TrieNode curr = root;
+        char[] s = str.toCharArray();
+        int n = s.length;
+        for (int i = 0; i < n; i++) {
+            int idx = s[i] - 'a';
+            if (curr.c[idx] == null) {
+                curr.c[idx] = new TrieNode();
+            }
+            curr = curr.c[idx];
+        }
+        curr.isWord = true;
+        curr.word = str;
+    }
+}
+public class kEditDistance {
+
+    List<String> res;
+    int m;
+    int k;
+    char[] targets;
+    public List<String> kDistance(String[] words, String target, int k) {
+        res = new ArrayList<>();
+        if (words == null || words.length == 0) {
+            return res;
+        }
+        this.k = k;
+        int n = words.length;
+        targets = target.toCharArray();
+        TrieNode root = new TrieNode();
+        for (int i = 0; i < n; i++) {
+            TrieNode.insert(root, words[i]);
+        }
+
+        this.m = target.length();
+        int[] f = new int[m + 1];
+        for (int i = 0; i <= m; i++) {
+            f[i] = i;
+        }
+
+        dfs(root, f);
+        return res;
+    }
+
+    private void dfs(TrieNode curr, int[] f) {
+        int[] currf = new int[m + 1];
+        if (curr.isWord && f[m] <= k) {
+            res.add(curr.word);
+        }
+
+        for (int i = 0; i < 26; i++) {
+            if (curr.c[i] == null) {
+                continue;
+            }
+            currf[0] = f[0] + 1;
+            for (int j = 1; j <= m; j++) {
+                currf[j] = Math.min(Math.min(currf[j - 1] + 1, f[j] + 1), currf[j - 1] + 1);
+                if (i == targets[j - 1] - 'a') {
+                    currf[j] = Math.min(currf[j], f[j - 1]);
+                }
+            }
+            dfs(curr.c[i], currf);
+        }
+    }
+}
+```
