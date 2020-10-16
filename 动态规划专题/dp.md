@@ -1481,7 +1481,7 @@ public boolean canCross(int[] stones) {
     }
     stepSet.get(stones[0]).add(0);
     for (int i = 0; i < n ; i++) {
-        Set<Integer> currSet = new HashSet<>(stepSet.get(stones[i]));
+        Set<Integer> currSet = new HashSet<>(stepSet.get(stones[i])); // avoid concurrent modification
         for (int step : currSet) {
             for (int delta = -1; delta <= 1; delta++) {
                 int nextStep = step + delta;
@@ -1495,3 +1495,37 @@ public boolean canCross(int[] stones) {
     return !stepSet.get(stones[n - 1]).isEmpty();
 }  
 ```
+
+* [Example 6: Maximal Square](https://www.lintcode.com/problem/maximal-square/description)<br>
+//State: dp[i][j] represent the maximum square length with the bottom right corner of nums[i][j].
+//State transfer: dp[i][j] = min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
+//dp[0][j] = dp[i][0] = 1 if nums[i][j] = 1;
+```Java
+public int maxSquare(int[][] matrix) {
+    if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+        return 0;
+    }
+    int m = matrix.length;
+    int n = matrix[0].length;
+    int[][] f = new int[m][n];
+    int i, j, res = 0;
+    for (i = 0; i < m; i++) {
+        for (j = 0; j < n; j++) {
+            if (matrix[i][j] == 0) {
+                f[i][j] = 0;
+                continue;
+            }
+            if (i == 0 || j == 0) {
+                f[i][j] = 1;
+                res =  Math.max(res, 1);
+                continue;
+            }
+            f[i][j] = Math.min(Math.min(f[i - 1][j], f[i][j - 1]), f[i - 1][j - 1]) + 1;
+            res = Math.max(res, f[i][j] * f[i][j]);
+        }
+    }
+    return res;
+}
+```
+
+* [Example 7: Maximal Rectangle](https://www.lintcode.com/problem/maximal-rectangle/description)<br>
