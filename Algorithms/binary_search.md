@@ -35,7 +35,7 @@ class Solution {
 
 # Binary search 重中之重：
 ## 原则： 
-**1. We must guarantee that the search space decreases over time (after each iteration, 最重要的剩2个和一个元素）**
+**1. We must guarantee that the search space decreases over time (after each iteration, 最重要的剩2个和一个元素）** <br>
 **2. We must guarantee that the target(if exists) cannot be ruled out accidentally, when we change the value of left or right**
 ## 具体操作：
 **先确定left和right的变化（通过题意），再通过搜索空间缩小至2 和 1时的情况确定 while循环内容。 做post process 后处理**
