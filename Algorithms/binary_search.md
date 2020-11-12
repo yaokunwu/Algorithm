@@ -30,9 +30,16 @@ class Solution {
     }
 }
 ```
-大部分二分查找类的题目都可以用这个模板，然后做一点特殊逻辑即可<br>
-另外二分查找还有一些其他模板如下图，大部分场景模板#3都能解决问题，而且还能找第一次/最后一次出现的位置，应用更加广泛 <br>
-![image](https://camo.githubusercontent.com/12b8c344966691f1dc81b59f69a9cdd0393356c5/687474703a2f2f7761726473657074656d6265722e636c75622f466c47475039315f72344d3963466d6378444c78524c454575614345) <br>
+
+![image](https://camo.githubusercontent.com/b3228d92578552d9098924866218c3183e3ae63d66d46a9d156e478329344206/68747470733a2f2f696d672e667569626f6f6d2e636f6d2f696d672f62696e6172795f7365617263685f74656d706c6174652e706e67) <br>
+
+# Binary search 重中之重：
+## 原则： 
+**1. We must guarantee that the search space decreases over time (after each iteration, 最重要的剩2个和一个元素）**
+**2. We must guarantee that the target(if exists) cannot be ruled out accidentally, when we change the value of left or right**
+## 具体操作：
+**先确定left和right的变化（通过题意），再通过搜索空间缩小至2 和 1时的情况确定 while循环内容。 做post process 后处理**
+
 
 [Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array) <br>
 思路：要求一个起始点和末尾点，所以遇到相等暂时不返回，继续向左找或者向右找。
