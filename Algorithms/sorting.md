@@ -4,11 +4,16 @@
 **本例有助于理解recursion的实现思考方式，先判断原问题和子问题的关系确定要引入参数，再层与层转换（原问题与子问题的转换）过程中确定需当前层需要完成的内容， 并进入下一层)**  <br>
 ```Java
 public class Solution {
-    // inplace sorting algorithm
-    public int[] quickSort(int[] nums) {
+    public int[] sortArray(int[] nums) {
+        if (nums == null || nums.length <= 1) {
+            return nums;
+        }
+        int start = 0, end = nums.length - 1;
         quickSort(nums, start, end); // 因为在把问题减小的过程中，需要quicksort的部分在减小，对应了两个parameter， start和end
         return nums;
     }
+
+
     
     private void quickSort(int[] nums, int start, int end) {
         if (start >= end) {  // base case
@@ -19,20 +24,21 @@ public class Solution {
         quickSort(nums, pivot + 1, end);    //进入下一层
     }
     //实现在每一层干的事
-    private int findPivot(int[] nums, start, end) {
+    private int findPivot(int[] nums, int start, int end) {
         int target = nums[end];
         int i = start;
         for (; start < end; start++) {
             if (nums[start] < target) {
-                swap(i, start);
+                swap(nums, i, start);
                 i++;
             }
         }
         //完成后， i所在位置大于等于target, 然后将pivot放在中间
-        swap(i, end);
+        swap(nums, i, end);
+        return i;
     }
     
-    private void swap(int[] nums, i, j) {
+    private void swap(int[] nums, int i, int j) {
         int temp = nums[i];
         nums[i] = nums[j];
         nums[j] = temp;
