@@ -53,49 +53,41 @@ class Solution {
         if (nums == null || nums.length <= 1) {
             return nums;
         }
-        int start = 0, end = nums.length - 1;
-        mergeSort(nums, start, end);  // 需要考虑是否要return value；
+        int left = 0, right = nums.length - 1;
+        mergeSort(nums, left, right);  // 需要考虑是否要return value；
         return nums;
     }
     
-    private void mergeSort(int[] nums, int start, int end) {
-        if( start >= end) {
+    private void mergeSort(int[] nums, int left, int right) {
+        if(left >= right) {
             return;
         }
-        int middle = start + (end - start) / 2;
-        mergeSort(nums, start, middle);
-        mergeSort(nums, middle + 1, end); 
-        // 当前层逻辑： 因为是bottom up， 底层俩个问题已被解决，当前层需要归并这两层。
-        merge(nums, start, end);
+        int mid = left + (right - left) / 2;
+        mergeSort(nums, left, mid);
+        mergeSort(nums, mid + 1, right); 
+        merge(nums, left, right);
     }
     
-    private void merge(int[] nums, int start, int end) {
-        int middle = start + (end - start) / 2;
-        int i = start, j = middle + 1;
-        int[] tmp = new int[nums.length];
-        int idx = start;
-        while (i <= middle && j <= end) {
+    private void merge(int[] nums, int left, int right) {
+        int mid = left + (right - left) / 2;
+        int i = left, j = mid + 1, k = 0;
+        int[] tmp = new int[right - left + 1];
+        while (i <= mid && j <= right) {
             if (nums[i] > nums[j]) {
-                tmp[idx] = nums[j];
-                idx++;
-                j++;
+                tmp[k++] = nums[j++];
             } else {
-                tmp[idx] = nums[i];
-                i++;
-                idx++;
+                tmp[k++] = nums[i++];
             }
         }
-        while (i <= middle) {
-            tmp[idx] = nums[i];
-            idx++;
-            i++;
+        while (i <= mid) {
+            tmp[k++] = nums[i++];
         }
-        while (j <= end) {
-            tmp[idx] = nums[j];
-            idx++;
-            j++;
+        while (j <= right) {
+            tmp[k++] = nums[j++];
         }
-        System.arraycopy(tmp, start, nums, start, end - start + 1);
+        for (int idx = 0; idx < right - left + 1; idx++) {
+            nums[left + idx] = tmp[idx];
+        }
     }
 }
 ```
