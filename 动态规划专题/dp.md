@@ -1529,3 +1529,8 @@ public int maxSquare(int[][] matrix) {
 ```
 
 * [Example 7: Maximal Rectangle](https://www.lintcode.com/problem/maximal-rectangle/description)<br>
+
+
+### 下文与以上课程无关
+这道题提醒我一定要注意初始条件的确定，严格按照老师教的4个步骤来解题。
+* [Greatest Sum Divisible by Three](https://leetcode.com/problems/greatest-sum-divisible-by-three/)<br>
