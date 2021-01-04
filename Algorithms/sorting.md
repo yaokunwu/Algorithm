@@ -48,34 +48,38 @@ public class Solution {
 ### quickSelect
 ```Java
 class Solution {
-    public int findKthSmallest(int[] nums, int k) {
-        return quickSelect(nums, k, 0, nums.length - 1);
+    public int findKthLargest(int[] nums, int k) {
+        int n = nums.length;
+        return quickSelect(nums, n - k, 0, nums.length - 1);
     }
     
     private int quickSelect(int[] nums, int k, int left, int right) {
-        if (left == right) {
-            return nums[left];
-        }
         Random r = new Random();
-        int pivotIdx = r.nextInt(right - left + 1);
+        int pivotIdx = r.nextInt(right - left + 1) + left;
         pivotIdx = partition(nums, left, right, pivotIdx);
-        if (pivotIdx == k - 1) {
+        if (pivotIdx == k) {
             return nums[pivotIdx];
-        } else if (pivotIdx > k - 1) {
+        } else if (pivotIdx > k) {
             return quickSelect(nums, k, left, pivotIdx - 1);
         }
-        return quickSelect(nums, k - 1 - pivotIdx, pivotIdx + 1, right);
+        return quickSelect(nums, k, pivotIdx + 1, right);
     }
     
     private int partition(int[] nums, int left, int right, int pivotIdx) {
         int pivot = nums[pivotIdx];
         swap(nums, pivotIdx, right);
         int i = left, j = right - 1;
-        while (i < j) {
-            while (i <= right && nums[i] < pivot) {
+        //一定要注意这里取等号
+        // 剩余两个元素时，必须要 i <= j
+        while (i <= j) {
+             //一定要注意这里
+             //i要找左边第一个大于pivot的元素,取等号
+            while (i < right && nums[i] <= pivot) {
                 i++;
             }
-            while (j >= 0 && nums[j] > pivot) {
+            //一定要注意这里
+            // j要找右边第一个小于pivot的元素,取等号
+            while (j >= 0 && nums[j] >= pivot) {
                 j--;
             }
             if (i < j) {
