@@ -45,6 +45,57 @@ public class Solution {
     }
 }
 ```
+### quickSelect
+```Java
+class Solution {
+    public int findKthSmallest(int[] nums, int k) {
+        return quickSelect(nums, k, 0, nums.length - 1);
+    }
+    
+    private int quickSelect(int[] nums, int k, int left, int right) {
+        if (left == right) {
+            return nums[left];
+        }
+        Random r = new Random();
+        int pivotIdx = r.nextInt(right - left + 1);
+        pivotIdx = partition(nums, left, right, pivotIdx);
+        if (pivotIdx == k - 1) {
+            return nums[pivotIdx];
+        } else if (pivotIdx > k - 1) {
+            return quickSelect(nums, k, left, pivotIdx - 1);
+        }
+        return quickSelect(nums, k - 1 - pivotIdx, pivotIdx + 1, right);
+    }
+    
+    private int partition(int[] nums, int left, int right, int pivotIdx) {
+        int pivot = nums[pivotIdx];
+        swap(nums, pivotIdx, right);
+        int i = left, j = right - 1;
+        while (i < j) {
+            while (i <= right && nums[i] < pivot) {
+                i++;
+            }
+            while (j >= 0 && nums[j] > pivot) {
+                j--;
+            }
+            if (i < j) {
+                swap(nums, i, j);
+            }
+        }
+        swap(nums, i, right);
+        return i;
+    }
+    
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+}
+```
+
+
+
 ### Merge Sort
 思路： 先分再和，bottom up，也是recursion，需引入参数， start和end， 分完后，考虑合并的逻辑
 ```Java 
