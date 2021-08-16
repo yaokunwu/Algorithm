@@ -1,6 +1,5 @@
 # 动态规划专题
 
-## 九章算法
 
 ### 动态规划组成部分一： 确定状态
 * f[i] 和 f[i][j]代表什么
@@ -1529,8 +1528,3 @@ public int maxSquare(int[][] matrix) {
 ```
 
 * [Example 7: Maximal Rectangle](https://www.lintcode.com/problem/maximal-rectangle/description)<br>
-
-
-### 下文与以上课程无关
-这道题提醒我一定要注意初始条件的确定，严格按照老师教的4个步骤来解题。
-* [Greatest Sum Divisible by Three](https://leetcode.com/problems/greatest-sum-divisible-by-three/)<br>
